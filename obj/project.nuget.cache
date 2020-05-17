@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "yi84hcWCKG8mD7Rg4lxTXpgmdRIYoBfnlKCOF8iIyeaT8XoXdFGXj5kiL8MPywcybNfMeS5+YOZN/Bx6K9BiEQ==",
+  "dgSpecHash": "srmVpWvJlkMuCVMH+OjPCF3FEvqWYYrrcIIF3U0GZm1y05Ftgvsez6n3nfZzDdp/97N+FgLqle54X1wBhnL6Pw==",
   "success": true,
   "projectFilePath": "C:\\Users\\gerhas\\code\\screencapture\\screencapture.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
+    "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\gerhas\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512"
+  ],
   "logs": []
 }
