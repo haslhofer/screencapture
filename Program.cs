@@ -11,6 +11,10 @@ namespace screencapture
 {
     public class ScreenCapture
     {
+        public ScreenCapture()
+        {
+            User32.SetProcessDPIAware();
+        }
         /// <summary>
         /// Creates an Image object containing a screen shot of the entire desktop
         /// </summary>
@@ -93,6 +97,8 @@ namespace screencapture
             public static extern IntPtr ReleaseDC(IntPtr hWnd,IntPtr hDC);
             [DllImport("user32.dll")]
             public static extern IntPtr GetWindowRect(IntPtr hWnd,ref RECT rect);
+            [DllImport("user32.dll", SetLastError=true)]
+            public static extern bool SetProcessDPIAware();
         }
 
         private class GDI32
@@ -121,6 +127,7 @@ namespace screencapture
 
         static void Main(string[] args)
         {
+            
             ScreenCapture sc = new ScreenCapture();
             // capture entire screen, and save it to a file
             Image img = sc.CaptureScreen();
