@@ -12,18 +12,40 @@ namespace screencapture
     
     class Program
     {
+        private static int sleepDefaultMS = 1000;
 
-        static void Main(string[] args)
+
+        static int Main(
+            string directory = "",
+            bool loopforever = false
+            )
         {
-            
-            ScreenCapture sc = new ScreenCapture();
-            // capture entire screen, and save it to a file
-            Image img = sc.CaptureScreen();
-            // display image in a Picture control named imageDisplay
-            // capture this window, and save it
-            //sc.CaptureWindowToFile(this.Handle,"C:\\temp2.gif",ImageFormat.Gif);
-            sc.CaptureScreenToFile(@"C:\data\test.jpg", ImageFormat.Jpeg);
-            Console.WriteLine("Hello World Gerald!");
+            if (directory == String.Empty) {directory = @"c:\data\";}
+         
+            do
+            {
+                ScreenCapture sc = new ScreenCapture();
+                // capture entire screen, and save it to a file
+                Image img = sc.CaptureScreen();
+                // display image in a Picture control named imageDisplay
+                // capture this window, and save it
+                //sc.CaptureWindowToFile(this.Handle,"C:\\temp2.gif",ImageFormat.Gif);
+                string path = System.IO.Path.Combine(directory, GetFileName());
+                sc.CaptureScreenToFile(path, ImageFormat.Jpeg);
+                Console.WriteLine("Captured at " + path);
+                if (loopforever)
+                {
+                    System.Threading.Thread.Sleep(sleepDefaultMS);
+                }
+            }
+            while(loopforever);
+            return 0;
+        }
+
+        private static string GetFileName()
+        {
+            long ticks = DateTime.Now.Ticks;
+            return "capture_" + ticks.ToString().Trim() + ".jpeg";
         }
     }
 }

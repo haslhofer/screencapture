@@ -51,6 +51,35 @@
           "lib/netstandard2.0/System.CommandLine.dll": {}
         }
       },
+      "System.CommandLine.DragonFruit/0.3.0-alpha.20253.1": {
+        "type": "package",
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta1.20253.1",
+          "System.CommandLine.Rendering": "0.3.0-alpha.20253.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.CommandLine.DragonFruit.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.CommandLine.DragonFruit.dll": {}
+        },
+        "build": {
+          "build/netstandard2.0/System.CommandLine.DragonFruit.props": {},
+          "build/netstandard2.0/System.CommandLine.DragonFruit.targets": {}
+        }
+      },
+      "System.CommandLine.Rendering/0.3.0-alpha.20253.1": {
+        "type": "package",
+        "dependencies": {
+          "System.CommandLine": "2.0.0-beta1.20253.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.CommandLine.Rendering.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.CommandLine.Rendering.dll": {}
+        }
+      },
       "System.Drawing.Common/4.7.0": {
         "type": "package",
         "dependencies": {
@@ -212,6 +241,36 @@
         "system.commandline.nuspec"
       ]
     },
+    "System.CommandLine.DragonFruit/0.3.0-alpha.20253.1": {
+      "sha512": "jiKygrVeTo+d3Tg5KjhgIZS7gO6g43ax/1BgkWza6ejTF9uCP24S0poYYcyYM26LHozzciRYGUQbsLoofg0iWw==",
+      "type": "package",
+      "path": "system.commandline.dragonfruit/0.3.0-alpha.20253.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "build/netstandard2.0/System.CommandLine.DragonFruit.props",
+        "build/netstandard2.0/System.CommandLine.DragonFruit.targets",
+        "lib/netstandard2.0/System.CommandLine.DragonFruit.dll",
+        "lib/netstandard2.0/System.CommandLine.DragonFruit.pdb",
+        "system.commandline.dragonfruit.0.3.0-alpha.20253.1.nupkg.sha512",
+        "system.commandline.dragonfruit.nuspec"
+      ]
+    },
+    "System.CommandLine.Rendering/0.3.0-alpha.20253.1": {
+      "sha512": "Pgwk4TLhYO5VExmUUwbDbmJr2tqohDpt09+jnRNvroEq7n4MJoH0u9wBNj9a5rf0s+pE3nDUQsKceIfwbo/MWw==",
+      "type": "package",
+      "path": "system.commandline.rendering/0.3.0-alpha.20253.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/netstandard2.0/System.CommandLine.Rendering.dll",
+        "lib/netstandard2.0/System.CommandLine.Rendering.pdb",
+        "system.commandline.rendering.0.3.0-alpha.20253.1.nupkg.sha512",
+        "system.commandline.rendering.nuspec"
+      ]
+    },
     "System.Drawing.Common/4.7.0": {
       "sha512": "v+XbyYHaZjDfn0ENmJEV1VYLgGgCTx1gnfOBcppowbpOAriglYgGCvFCPr2EEZyBvXlpxbEsTwkOlInl107ahA==",
       "type": "package",
@@ -276,6 +335,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "System.CommandLine >= 2.0.0-beta1.20253.1",
+      "System.CommandLine.DragonFruit >= 0.3.0-alpha.20253.1",
       "System.Drawing.Common >= 4.7.0"
     ]
   },
@@ -319,6 +379,10 @@
           "System.CommandLine": {
             "target": "Package",
             "version": "[2.0.0-beta1.20253.1, )"
+          },
+          "System.CommandLine.DragonFruit": {
+            "target": "Package",
+            "version": "[0.3.0-alpha.20253.1, )"
           },
           "System.Drawing.Common": {
             "target": "Package",
