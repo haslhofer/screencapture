@@ -113,11 +113,16 @@ namespace screencapture
         /// </summary>
         public class DisplayInfo
         {
+            public string DeviceName { get; set;}
             public string Availability { get; set; }
-            public string ScreenHeight { get; set; }
-            public string ScreenWidth { get; set; }
+            public int ScreenHeight { get; set; }
+            public int ScreenWidth { get; set; }
             public RectStruct MonitorArea { get; set; }
             public RectStruct WorkArea { get; set; }
+            public IntPtr hdcMonitor { get; set; }
+            public IntPtr hMonitor { get; set; }
+
+
         }
 
         /// <summary>
@@ -144,11 +149,15 @@ namespace screencapture
                 if (success)
                 {
                     DisplayInfo di = new DisplayInfo();
-                    di.ScreenWidth = (mi.Monitor.Right - mi.Monitor.Left).ToString();
-                    di.ScreenHeight = (mi.Monitor.Bottom - mi.Monitor.Top).ToString();
+                    di.hdcMonitor = hdcMonitor;
+                    di.hMonitor = hMonitor;
+                    di.ScreenWidth = (mi.Monitor.Right - mi.Monitor.Left);
+                    di.ScreenHeight = (mi.Monitor.Bottom - mi.Monitor.Top);
                     di.MonitorArea = mi.Monitor;
                     di.WorkArea = mi.WorkArea;
                     di.Availability = mi.Flags.ToString();
+                    di.DeviceName = mi.DeviceName;
+
                     col.Add(di);
                 }
                 return true;

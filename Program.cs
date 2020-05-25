@@ -20,32 +20,46 @@ namespace screencapture
             bool loopforever = false
             )
         {
-            if (directory == String.Empty) {directory = @"c:\data\";}
-         
+
+            User32.SetProcessDPIAware();
+
+            if (directory == String.Empty) {directory = @"c:\data\temp\";}
+
+            //Retrieve Monitor configuration, so we can enumerate all displays
+            MonitorHelper h = new MonitorHelper();
+            var displays = h.GetDisplays();
+            ScreenCapture sc = new ScreenCapture();
+            
             do
             {
-                ScreenCapture sc = new ScreenCapture();
-                // capture entire screen, and save it to a file
-                Image img = sc.CaptureScreen();
-                // display image in a Picture control named imageDisplay
-                // capture this window, and save it
-                //sc.CaptureWindowToFile(this.Handle,"C:\\temp2.gif",ImageFormat.Gif);
-                string path = System.IO.Path.Combine(directory, GetFileName());
-                sc.CaptureScreenToFile(path, ImageFormat.Jpeg);
-                Console.WriteLine("Captured at " + path);
+                DateTime capturedTime = DateTime.Now;
+                int deviceCount = 0;
+                foreach (var aDisplay in displays)
+                {
+                    string deviceName = aDisplay.DeviceName;
+                    // Get DC from device name
+                    Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                    string path = System.IO.Path.Combine(directory, GetFileName(deviceCount.ToString(), capturedTime));
+                    img.Save(path, ImageFormat.Jpeg);
+                    Console.WriteLine("Captured at " + path);
+                    deviceCount++;
+                }
                 if (loopforever)
                 {
                     System.Threading.Thread.Sleep(sleepDefaultMS);
                 }
             }
             while(loopforever);
+
             return 0;
         }
 
-        private static string GetFileName()
+      
+
+        private static string GetFileName(string display, DateTime captureTime)
         {
-            long ticks = DateTime.Now.Ticks;
-            return "capture_" + ticks.ToString().Trim() + ".jpeg";
+            long ticks = captureTime.Ticks;
+            return "capture_" + ticks.ToString().Trim() + "_"+ display + ".jpeg";
         }
     }
 }
