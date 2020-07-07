@@ -29,4 +29,17 @@ namespace screencapture
         [DllImport("user32.dll", SetLastError=true)]
         public static extern bool SetProcessDPIAware();
     }
+
+
+    public class SHCore
+    {
+        public enum PROCESS_DPI_AWARENESS
+        {
+            Process_DPI_Unaware = 0,
+            Process_System_DPI_Aware = 1,
+            Process_Per_Monitor_DPI_Aware = 2
+        }
+        [DllImport("SHCore.dll", SetLastError = true)]
+        public static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS awareness);
+    }
 }

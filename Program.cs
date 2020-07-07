@@ -21,7 +21,10 @@ namespace screencapture
             )
         {
 
-            User32.SetProcessDPIAware();
+            //bool result = User32.SetProcessDPIAware();
+
+            bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
+            var setDpiError = Marshal.GetLastWin32Error();
 
             if (directory == String.Empty) {directory = @"c:\data\temp\";}
 
