@@ -28,13 +28,13 @@ namespace screencapture
         /// <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
         /// <returns></returns>
        
-        [DllImport("gdi32.dll")]
-        static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
+        // [DllImport("gdi32.dll")]
+        // static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
 
 
         public Image CaptureWindowFromDevice(string deviceName, int width, int height)
         {
-            IntPtr hdcSrc = CreateDC(deviceName, null, null, IntPtr.Zero);
+            IntPtr hdcSrc = GDI32.CreateDC(deviceName, null, null, IntPtr.Zero);
 
             
             // create a device context we can copy to

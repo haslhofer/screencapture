@@ -28,6 +28,14 @@ namespace screencapture
         public static extern IntPtr GetWindowRect(IntPtr hWnd,ref RECT rect);
         [DllImport("user32.dll", SetLastError=true)]
         public static extern bool SetProcessDPIAware();
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsIconic(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public  static extern IntPtr GetForegroundWindow();
+
     }
 
 

@@ -28,6 +28,9 @@ namespace screencapture
 
             if (directory == String.Empty) {directory = @"c:\data\temp\";}
 
+            //Retrieve app specific coordinates
+            var apps = ProcessHelper.GetProcessList();
+
             //Retrieve Monitor configuration, so we can enumerate all displays
             MonitorHelper h = new MonitorHelper();
             var displays = h.GetDisplays();
