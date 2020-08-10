@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
-
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
-
-
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace screencapture
 {
@@ -28,28 +29,48 @@ namespace screencapture
 
             if (directory == String.Empty) {directory = @"c:\data\temp\";}
 
-            //Retrieve app specific coordinates
-            var apps = ProcessHelper.GetProcessList();
+        
 
             //Retrieve Monitor configuration, so we can enumerate all displays
             MonitorHelper h = new MonitorHelper();
             var displays = h.GetDisplays();
+
+            
+            
             ScreenCapture sc = new ScreenCapture();
             
             do
             {
+
+                List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
+
                 DateTime capturedTime = DateTime.Now;
                 int deviceCount = 0;
                 foreach (var aDisplay in displays)
                 {
+                    MonitorInfo aMonitorInfo = new MonitorInfo();
+                    aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
+                    
                     string deviceName = aDisplay.DeviceName;
                     // Get DC from device name
                     Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
                     string path = System.IO.Path.Combine(directory, GetFileName(deviceCount.ToString(), capturedTime));
                     img.Save(path, ImageFormat.Jpeg);
+                    aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
                     deviceCount++;
+                    monitorInfos.Add(aMonitorInfo);
                 }
+
+                ScreenState s = new ScreenState();
+                s.AppInfos =  ProcessHelper.GetAppInfoList();
+                s.MonitorInfos = monitorInfos;
+
+                //Serialize
+                string pathJson = System.IO.Path.Combine(directory, GetFileNameJson(capturedTime));
+                string jsonString = JsonSerializer.Serialize(s);
+                File.WriteAllText(pathJson, jsonString);
+
                 if (loopforever)
                 {
                     System.Threading.Thread.Sleep(sleepDefaultMS);
@@ -61,6 +82,11 @@ namespace screencapture
         }
 
       
+        private static string GetFileNameJson(DateTime captureTime)
+        {
+            long ticks = captureTime.Ticks;
+            return "screenstate_" + ticks.ToString().Trim() + ".json";
+        }
 
         private static string GetFileName(string display, DateTime captureTime)
         {
@@ -69,3 +95,4 @@ namespace screencapture
         }
     }
 }
+
