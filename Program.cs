@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
 
+
 namespace screencapture
 {
     
@@ -46,9 +47,14 @@ namespace screencapture
 
                 DateTime capturedTime = DateTime.Now;
                 int deviceCount = 0;
+
+                List<ScreenText> ocrResults = new List<ScreenText>();
+
                 foreach (var aDisplay in displays)
                 {
                     MonitorInfo aMonitorInfo = new MonitorInfo();
+                    aMonitorInfo.ID = deviceCount;
+
                     aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
                     
                     string deviceName = aDisplay.DeviceName;
@@ -58,6 +64,10 @@ namespace screencapture
                     img.Save(path, ImageFormat.Jpeg);
                     aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
+
+                    List<ScreenText> ocrText =  OcrHelper.GetScreenTexts(path, deviceCount);
+                    ocrResults.AddRange(ocrText);
+
                     deviceCount++;
                     monitorInfos.Add(aMonitorInfo);
                 }
@@ -65,6 +75,7 @@ namespace screencapture
                 ScreenState s = new ScreenState();
                 s.AppInfos =  ProcessHelper.GetAppInfoList();
                 s.MonitorInfos = monitorInfos;
+                s.TextOnScreen = ocrResults;
 
                 //Serialize
                 string pathJson = System.IO.Path.Combine(directory, GetFileNameJson(capturedTime));

@@ -4,6 +4,7 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)tesseract\4.1.0-beta1\build\Tesseract.targets" Condition="Exists('$(NuGetPackageRoot)tesseract\4.1.0-beta1\build\Tesseract.targets')" />
     <Import Project="$(NuGetPackageRoot)system.commandline.dragonfruit\0.3.0-alpha.20253.1\build\netstandard2.0\System.CommandLine.DragonFruit.targets" Condition="Exists('$(NuGetPackageRoot)system.commandline.dragonfruit\0.3.0-alpha.20253.1\build\netstandard2.0\System.CommandLine.DragonFruit.targets')" />
   </ImportGroup>
 </Project>

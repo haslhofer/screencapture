@@ -49,6 +49,10 @@
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[4.7.0, )"
+            },
+            "Tesseract": {
+              "target": "Package",
+              "version": "[4.1.0-beta1, )"
             }
           },
           "imports": [
