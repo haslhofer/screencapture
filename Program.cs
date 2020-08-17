@@ -54,20 +54,25 @@ namespace screencapture
                 {
                     MonitorInfo aMonitorInfo = new MonitorInfo();
                     aMonitorInfo.ID = deviceCount;
-
                     aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
-                    
+
                     string deviceName = aDisplay.DeviceName;
-                    // Get DC from device name
+
+                    //Take Screenshot
                     Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
                     string path = System.IO.Path.Combine(directory, GetFileName(deviceCount.ToString(), capturedTime));
                     img.Save(path, ImageFormat.Jpeg);
                     aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
 
+                    //Do OCR
                     List<ScreenText> ocrText =  OcrHelper.GetScreenTexts(path, deviceCount);
                     ocrResults.AddRange(ocrText);
 
+                    // Re-render bitmap
+                    Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                    RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
+                    b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
                     deviceCount++;
                     monitorInfos.Add(aMonitorInfo);
                 }
