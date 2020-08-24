@@ -19,7 +19,11 @@ namespace screencapture
 
         static int Main(
             string directory = "",
-            bool loopforever = false
+            bool loopforever = false,
+            bool detectText = false,
+            bool detectProcesses = false,
+            bool detectFaces = true
+
             )
         {
 
@@ -65,20 +69,32 @@ namespace screencapture
                     aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
 
-                    //Do OCR
-                    List<ScreenText> ocrText =  OcrHelper.GetScreenTexts(path, deviceCount);
-                    ocrResults.AddRange(ocrText);
+                    if (detectText)
+                    {
+                        //Do OCR
+                        List<ScreenText> ocrText =  OcrHelper.GetScreenTexts(path, deviceCount);
+                        ocrResults.AddRange(ocrText);
 
-                    // Re-render bitmap
-                    Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                    RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
-                    b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
+                        /*
+                        // Re-render bitmap
+                        Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                        RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
+                        b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
+                        */
+                    }
                     deviceCount++;
                     monitorInfos.Add(aMonitorInfo);
                 }
 
                 ScreenState s = new ScreenState();
-                s.AppInfos =  ProcessHelper.GetAppInfoList();
+                if (detectProcesses)
+                {
+                    s.AppInfos =  ProcessHelper.GetAppInfoList();
+                }
+                else
+                {
+                    s.AppInfos = new List<AppInfo>();
+                }
                 s.MonitorInfos = monitorInfos;
                 s.TextOnScreen = ocrResults;
 
