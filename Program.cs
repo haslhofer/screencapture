@@ -11,16 +11,25 @@ using System.IO;
 
 namespace screencapture
 {
-    
+
     class Program
     {
         private static int sleepDefaultMS = 1000;
 
+        private enum FileTypeForSerialization
+        {
+            Jpeg = 1,
+            FullOCR = 2,
+            RawText = 3
+
+        }
 
         static int Main(
             string directory = "",
             bool loopforever = false,
             bool detectText = false,
+            bool generateTextDump = false,
+            //bool reRenderText = false,
             bool detectProcesses = false,
             bool detectFaces = true
 
@@ -32,18 +41,18 @@ namespace screencapture
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
-            if (directory == String.Empty) {directory = @"c:\data\temp\";}
+            if (directory == String.Empty) { directory = @"c:\data\temp2\"; }
 
-        
+
 
             //Retrieve Monitor configuration, so we can enumerate all displays
             MonitorHelper h = new MonitorHelper();
             var displays = h.GetDisplays();
 
-            
-            
+
+
             ScreenCapture sc = new ScreenCapture();
-            
+
             do
             {
 
@@ -64,7 +73,7 @@ namespace screencapture
 
                     //Take Screenshot
                     Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                    string path = System.IO.Path.Combine(directory, GetFileName(deviceCount.ToString(), capturedTime));
+                    string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
                     img.Save(path, ImageFormat.Jpeg);
                     aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
@@ -72,8 +81,30 @@ namespace screencapture
                     if (detectText)
                     {
                         //Do OCR
-                        List<ScreenText> ocrText =  OcrHelper.GetScreenTexts(path, deviceCount);
+                        List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
                         ocrResults.AddRange(ocrText);
+
+                        if (generateTextDump)
+                        {
+                            if (ocrText != null && ocrText.Count > 0)
+                            {
+
+                                string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
+                                StreamWriter writeToDisc = new StreamWriter(filePath);
+
+                                foreach (var aRes in ocrResults)
+                                {
+                                    writeToDisc.Write(aRes.Content + " ");
+                                }
+
+                                writeToDisc.Flush();
+                                writeToDisc.Close(); 
+                            }
+                        }
+        
+                    
+                        
+
 
                         /*
                         // Re-render bitmap
@@ -89,7 +120,7 @@ namespace screencapture
                 ScreenState s = new ScreenState();
                 if (detectProcesses)
                 {
-                    s.AppInfos =  ProcessHelper.GetAppInfoList();
+                    s.AppInfos = ProcessHelper.GetAppInfoList();
                 }
                 else
                 {
@@ -98,8 +129,9 @@ namespace screencapture
                 s.MonitorInfos = monitorInfos;
                 s.TextOnScreen = ocrResults;
 
+
                 //Serialize
-                string pathJson = System.IO.Path.Combine(directory, GetFileNameJson(capturedTime));
+                string pathJson = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.FullOCR, capturedTime, string.Empty));
                 string jsonString = JsonSerializer.Serialize(s);
                 File.WriteAllText(pathJson, jsonString);
 
@@ -108,23 +140,48 @@ namespace screencapture
                     System.Threading.Thread.Sleep(sleepDefaultMS);
                 }
             }
-            while(loopforever);
+            while (loopforever);
 
             return 0;
         }
 
-      
-        private static string GetFileNameJson(DateTime captureTime)
+        private static string GetFileName(FileTypeForSerialization fts, DateTime captureTime, string optionalFileName)
         {
             long ticks = captureTime.Ticks;
-            return "screenstate_" + ticks.ToString().Trim() + ".json";
+            string optionalFileNameFinal = "";
+
+            if (!string.IsNullOrEmpty(optionalFileName))
+            {
+                optionalFileNameFinal = "_" + optionalFileName;
+            }
+            return "capture_" +
+                    GetSerializationFileStringFromType(fts) + "_" +
+                    ticks.ToString().Trim() +
+                    optionalFileNameFinal +
+                    "." + GetSerializationExtensionFromType(fts);
         }
 
-        private static string GetFileName(string display, DateTime captureTime)
+        private static string GetSerializationFileStringFromType(FileTypeForSerialization t)
         {
-            long ticks = captureTime.Ticks;
-            return "capture_" + ticks.ToString().Trim() + "_"+ display + ".jpeg";
+            switch (t)
+            {
+                case FileTypeForSerialization.FullOCR: return "OcrText";
+                case FileTypeForSerialization.Jpeg: return "Image";
+                case FileTypeForSerialization.RawText: return "RawText";
+                default: throw new Exception("Unknown FileTypeForSerialization");
+            }
         }
+        private static string GetSerializationExtensionFromType(FileTypeForSerialization t)
+        {
+            switch (t)
+            {
+                case FileTypeForSerialization.FullOCR: return "json";
+                case FileTypeForSerialization.Jpeg: return "jpg";
+                case FileTypeForSerialization.RawText: return "txt";
+                default: throw new Exception("Unknown FileTypeForSerialization");
+            }
+        }
+
     }
 }
 
