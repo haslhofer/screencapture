@@ -1032,21 +1032,19 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\data\\GitHub\\screencapture\\screencapture.csproj",
+      "projectUniqueName": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\screencapture.csproj",
       "projectName": "screencapture",
-      "projectPath": "C:\\data\\GitHub\\screencapture\\screencapture.csproj",
+      "projectPath": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\screencapture.csproj",
       "packagesPath": "C:\\Users\\gerhas\\.nuget\\packages\\",
-      "outputPath": "C:\\data\\GitHub\\screencapture\\obj\\",
+      "outputPath": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gerhas\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\gerhas\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1095,7 +1093,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
       }
     }
   }

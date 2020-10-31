@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Drawing.Imaging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using System.Collections.Concurrent;
 
 
 namespace screencapture
@@ -14,174 +16,55 @@ namespace screencapture
 
     class Program
     {
-        private static int sleepDefaultMS = 1000;
+        
 
-        private enum FileTypeForSerialization
-        {
-            Jpeg = 1,
-            FullOCR = 2,
-            RawText = 3
 
-        }
+        public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
+        public static List<NoteReference> _NoteReferences = new List<NoteReference>();
 
         static int Main(
             string directory = "",
-            bool loopforever = false,
-            bool detectText = false,
+            bool loopforever = true,
+            bool detectText = true,
             bool generateTextDump = false,
             //bool reRenderText = false,
-            bool detectProcesses = false,
-            bool detectFaces = true
+            bool detectProcesses = false
+            
 
             )
         {
 
-            //bool result = User32.SetProcessDPIAware();
+            FillTestData();
+
 
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
             if (directory == String.Empty) { directory = @"c:\data\temp2\"; }
 
+            //Start workers
 
+            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses));
+            myCaptureThread.Start();
 
-            //Retrieve Monitor configuration, so we can enumerate all displays
-            MonitorHelper h = new MonitorHelper();
-            var displays = h.GetDisplays();
+            Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
+            myShowNote.Start();
 
+            Console.ReadLine();
 
-
-            ScreenCapture sc = new ScreenCapture();
-
-            do
-            {
-
-                List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
-
-                DateTime capturedTime = DateTime.Now;
-                int deviceCount = 0;
-
-                List<ScreenText> ocrResults = new List<ScreenText>();
-
-                foreach (var aDisplay in displays)
-                {
-                    MonitorInfo aMonitorInfo = new MonitorInfo();
-                    aMonitorInfo.ID = deviceCount;
-                    aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
-
-                    string deviceName = aDisplay.DeviceName;
-
-                    //Take Screenshot
-                    Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                    string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
-                    img.Save(path, ImageFormat.Jpeg);
-                    aMonitorInfo.ImageFullPath = path;
-                    Console.WriteLine("Captured at " + path);
-
-                    if (detectText)
-                    {
-                        //Do OCR
-                        List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
-                        ocrResults.AddRange(ocrText);
-
-                        if (generateTextDump)
-                        {
-                            if (ocrText != null && ocrText.Count > 0)
-                            {
-
-                                string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
-                                StreamWriter writeToDisc = new StreamWriter(filePath);
-
-                                foreach (var aRes in ocrResults)
-                                {
-                                    writeToDisc.Write(aRes.Content + " ");
-                                }
-
-                                writeToDisc.Flush();
-                                writeToDisc.Close(); 
-                            }
-                        }
-        
-                    
-                        
-
-
-                        /*
-                        // Re-render bitmap
-                        Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                        RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
-                        b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
-                        */
-                    }
-                    deviceCount++;
-                    monitorInfos.Add(aMonitorInfo);
-                }
-
-                ScreenState s = new ScreenState();
-                if (detectProcesses)
-                {
-                    s.AppInfos = ProcessHelper.GetAppInfoList();
-                }
-                else
-                {
-                    s.AppInfos = new List<AppInfo>();
-                }
-                s.MonitorInfos = monitorInfos;
-                s.TextOnScreen = ocrResults;
-
-
-                //Serialize
-                string pathJson = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.FullOCR, capturedTime, string.Empty));
-                string jsonString = JsonSerializer.Serialize(s);
-                File.WriteAllText(pathJson, jsonString);
-
-                if (loopforever)
-                {
-                    System.Threading.Thread.Sleep(sleepDefaultMS);
-                }
-            }
-            while (loopforever);
 
             return 0;
         }
 
-        private static string GetFileName(FileTypeForSerialization fts, DateTime captureTime, string optionalFileName)
+        private static void FillTestData()
         {
-            long ticks = captureTime.Ticks;
-            string optionalFileNameFinal = "";
-
-            if (!string.IsNullOrEmpty(optionalFileName))
-            {
-                optionalFileNameFinal = "_" + optionalFileName;
-            }
-            return "capture_" +
-                    GetSerializationFileStringFromType(fts) + "_" +
-                    ticks.ToString().Trim() +
-                    optionalFileNameFinal +
-                    "." + GetSerializationExtensionFromType(fts);
+            NoteReference r1 = new NoteReference();
+            r1.Anchor = "haslhofer";
+            r1.Note = "This is a note about haslhofer";
+            _NoteReferences.Add(r1);
         }
 
-        private static string GetSerializationFileStringFromType(FileTypeForSerialization t)
-        {
-            switch (t)
-            {
-                case FileTypeForSerialization.FullOCR: return "OcrText";
-                case FileTypeForSerialization.Jpeg: return "Image";
-                case FileTypeForSerialization.RawText: return "RawText";
-                default: throw new Exception("Unknown FileTypeForSerialization");
-            }
-        }
-        private static string GetSerializationExtensionFromType(FileTypeForSerialization t)
-        {
-            switch (t)
-            {
-                case FileTypeForSerialization.FullOCR: return "json";
-                case FileTypeForSerialization.Jpeg: return "jpg";
-                case FileTypeForSerialization.RawText: return "txt";
-                default: throw new Exception("Unknown FileTypeForSerialization");
-            }
-        }
-
+     
     }
 }
 

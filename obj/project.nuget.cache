@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iC0dN96XhmRRu0Nl6wwekmsR0qhTYgi6ijv/G+BBt8leKimlt3ycFLW6HSoSnxDExBv0OFWo8hCm3WFx0UVhQg==",
+  "dgSpecHash": "dOQKnBK/nnOvDQfQJZgohSgrfkYQj08jguKmeVKUkO+i1SZlE3ec+459giXucUUiu4cYYdMMEebXBsnVKO06qQ==",
   "success": true,
-  "projectFilePath": "C:\\data\\GitHub\\screencapture\\screencapture.csproj",
+  "projectFilePath": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\screencapture.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.csharp\\4.4.1\\microsoft.csharp.4.4.1.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
