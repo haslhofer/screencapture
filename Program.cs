@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
 using System.Collections.Concurrent;
+using System.Windows.Forms;
 
 
 namespace screencapture
@@ -22,6 +23,7 @@ namespace screencapture
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
 
+        [STAThread]
         static int Main(
             string directory = "",
             bool loopforever = true,
@@ -50,7 +52,13 @@ namespace screencapture
             Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
             myShowNote.Start();
 
-            Console.ReadLine();
+
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+
+            //Console.ReadLine();
 
 
             return 0;
