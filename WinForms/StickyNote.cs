@@ -10,17 +10,21 @@ using System.Windows.Forms;
 
 namespace screencapture
 {
-    public partial class Form1 : Form
+    public partial class StickyNote : Form
     {
-        public Form1()
+        private string _NoteText;
+        public StickyNote(string NoteText)
         {
+            _NoteText = NoteText;
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(400, 100);
-            TextBox b = new TextBox();
+            Label b = new Label();
             //b.TextChanged += ChangePos;
-            b.Text = "Hello";
+            b.Text = NoteText;
             this.Controls.Add(b);
+            this.Opacity = 0.8;
+            this.TopMost = true;
 
         }
 
@@ -29,6 +33,21 @@ namespace screencapture
             InvokeUI(() => {
             this.Location = new Point(x,y);
             });
+        }
+
+        public void HideNote()
+        {
+              InvokeUI(() => {
+            this.Hide();
+            });
+
+        }
+        public void ShowNote()
+        {
+              InvokeUI(() => {
+            this.Show();
+            });
+
         }
 
         private void InvokeUI(Action a)

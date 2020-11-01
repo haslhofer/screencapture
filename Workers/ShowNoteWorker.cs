@@ -32,7 +32,12 @@ namespace screencapture
                     {
                         System.Diagnostics.Debug.WriteLine("Found " + foundScreenText.Content);
                         Program._NoteForm.ChangePos(foundScreenText.Position.Left, foundScreenText.Position.Top);
+                        Program._NoteForm.ShowNote();
 
+                    }
+                    else
+                    {
+                        Program._NoteForm.HideNote();
                     }
                 }
 

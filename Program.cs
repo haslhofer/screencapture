@@ -23,7 +23,7 @@ namespace screencapture
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
 
-        public static Form1 _NoteForm;
+        public static StickyNote _NoteForm;
 
         [STAThread]
         static int Main(
@@ -55,11 +55,14 @@ namespace screencapture
             myShowNote.Start();
 
 
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            _NoteForm = new Form1();
-            Application.Run(_NoteForm);
+            _NoteForm = new StickyNote("Test");
+            _NoteForm.Show();
+            //Application.Run(_NoteForm);
+            Application.Run();
+            
 
             //Console.ReadLine();
 

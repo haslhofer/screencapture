@@ -1,6 +1,6 @@
 namespace screencapture
 {
-    partial class Form1
+    partial class StickyNote
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,7 +30,8 @@ namespace screencapture
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(100, 150);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Text = "Form1";
         }
 
