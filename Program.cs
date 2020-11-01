@@ -23,6 +23,8 @@ namespace screencapture
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
 
+        public static Form1 _NoteForm;
+
         [STAThread]
         static int Main(
             string directory = "",
@@ -56,7 +58,8 @@ namespace screencapture
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            _NoteForm = new Form1();
+            Application.Run(_NoteForm);
 
             //Console.ReadLine();
 

@@ -18,15 +18,22 @@ namespace screencapture
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(400, 100);
             TextBox b = new TextBox();
-            b.TextChanged += my;
+            //b.TextChanged += ChangePos;
             b.Text = "Hello";
             this.Controls.Add(b);
 
         }
 
-        private void my(object sender, EventArgs e)
+        public void ChangePos()
         {
+            InvokeUI(() => {
             this.Location = new Point(this.Location.X + 10, this.Location.Y);
+            });
+        }
+
+        private void InvokeUI(Action a)
+        {
+            this.BeginInvoke(new MethodInvoker(a));
         }
 
     }

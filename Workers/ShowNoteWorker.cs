@@ -31,6 +31,7 @@ namespace screencapture
                     if (foundScreenText !=null)
                     {
                         System.Diagnostics.Debug.WriteLine("Found " + foundScreenText.Content);
+                        Program._NoteForm.ChangePos();
 
                     }
                 }
