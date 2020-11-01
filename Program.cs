@@ -70,7 +70,7 @@ namespace screencapture
         private static void FillTestData()
         {
             NoteReference r1 = new NoteReference();
-            r1.Anchor = "haslhofer";
+            r1.Anchor = "hundertwasser";
             r1.Note = "This is a note about haslhofer";
             _NoteReferences.Add(r1);
         }

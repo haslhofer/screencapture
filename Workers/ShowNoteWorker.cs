@@ -13,7 +13,7 @@ namespace screencapture
 
     public class ShowNoteWorker
     {
-        private static string _searchText = "haslhofer";
+        private static string _searchText = "hundertwasser";
         
         private static int sleepDefaultMS = 50;
 
@@ -31,7 +31,7 @@ namespace screencapture
                     if (foundScreenText !=null)
                     {
                         System.Diagnostics.Debug.WriteLine("Found " + foundScreenText.Content);
-                        Program._NoteForm.ChangePos();
+                        Program._NoteForm.ChangePos(foundScreenText.Position.Left, foundScreenText.Position.Top);
 
                     }
                 }

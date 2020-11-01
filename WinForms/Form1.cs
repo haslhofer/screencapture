@@ -24,10 +24,10 @@ namespace screencapture
 
         }
 
-        public void ChangePos()
+        public void ChangePos(int x, int y)
         {
             InvokeUI(() => {
-            this.Location = new Point(this.Location.X + 10, this.Location.Y);
+            this.Location = new Point(x,y);
             });
         }
 
