@@ -47,6 +47,15 @@
           }
         }
       },
+      "NLog/4.7.5": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/NLog.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NLog.dll": {}
+        }
+      },
       "System.CommandLine/2.0.0-beta1.20253.1": {
         "type": "package",
         "dependencies": {
@@ -363,6 +372,39 @@
         "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.xml",
         "useSharedDesignerContext.txt",
         "version.txt"
+      ]
+    },
+    "NLog/4.7.5": {
+      "sha512": "1Udzim+UwoAGk0vW6T2rEBXJq1COvqTuE+4NFj2zHytuX1WOu+1Yes1qABG1IJOA5V3OMilIufUU1Ha9T0rrzQ==",
+      "type": "package",
+      "path": "nlog/4.7.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/monoandroid44/NLog.dll",
+        "lib/monoandroid44/NLog.xml",
+        "lib/net35/NLog.dll",
+        "lib/net35/NLog.xml",
+        "lib/net40-client/NLog.dll",
+        "lib/net40-client/NLog.xml",
+        "lib/net45/NLog.dll",
+        "lib/net45/NLog.xml",
+        "lib/netstandard1.3/NLog.dll",
+        "lib/netstandard1.3/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
+        "lib/sl4/NLog.dll",
+        "lib/sl4/NLog.xml",
+        "lib/sl5/NLog.dll",
+        "lib/sl5/NLog.xml",
+        "lib/wp8/NLog.dll",
+        "lib/wp8/NLog.xml",
+        "lib/xamarinios10/NLog.dll",
+        "lib/xamarinios10/NLog.xml",
+        "nlog.4.7.5.nupkg.sha512",
+        "nlog.nuspec"
       ]
     },
     "System.CommandLine/2.0.0-beta1.20253.1": {
@@ -1023,7 +1065,8 @@
       "System.CommandLine >= 2.0.0-beta1.20253.1",
       "System.CommandLine.DragonFruit >= 0.3.0-alpha.20253.1",
       "System.Drawing.Common >= 4.7.0",
-      "Tesseract >= 4.1.0-beta1"
+      "Tesseract >= 4.1.0-beta1",
+      "nlog >= 4.7.5"
     ]
   },
   "packageFolders": {
@@ -1076,6 +1119,10 @@
           "Tesseract": {
             "target": "Package",
             "version": "[4.1.0-beta1, )"
+          },
+          "nlog": {
+            "target": "Package",
+            "version": "[4.7.5, )"
           }
         },
         "imports": [

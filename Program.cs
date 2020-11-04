@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.IO;
 using System.Collections.Concurrent;
 using System.Windows.Forms;
+using NLog;
 
 
 namespace screencapture
@@ -17,9 +18,9 @@ namespace screencapture
 
     class Program
     {
-        
 
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
 
@@ -33,10 +34,12 @@ namespace screencapture
             bool generateTextDump = false,
             //bool reRenderText = false,
             bool detectProcesses = false
-            
+
 
             )
         {
+            ConfigureLogging();
+            Logger.Info("Startup");
 
             FillTestData();
 
@@ -62,7 +65,7 @@ namespace screencapture
             _NoteForm.Show();
             //Application.Run(_NoteForm);
             Application.Run();
-            
+
 
             //Console.ReadLine();
 
@@ -70,15 +73,31 @@ namespace screencapture
             return 0;
         }
 
+        private static void ConfigureLogging()
+        {
+            var config = new NLog.Config.LoggingConfiguration();
+
+            // Targets where to log to: File and Console
+            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = "file.txt" };
+            var logconsole = new NLog.Targets.ConsoleTarget("logconsole");
+
+            // Rules for mapping loggers to targets            
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, logconsole);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+
+            // Apply config           
+            NLog.LogManager.Configuration = config;
+        }
+
         private static void FillTestData()
         {
             NoteReference r1 = new NoteReference();
-            r1.Anchor = "hundertwasser";
-            r1.Note = "This is a note about haslhofer";
+            r1.Anchor = "wenjun";
+            r1.Note = "Send a Note to Wenjun";
             _NoteReferences.Add(r1);
         }
 
-     
+
     }
 }
 

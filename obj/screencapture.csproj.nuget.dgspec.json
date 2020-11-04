@@ -51,6 +51,10 @@
             "Tesseract": {
               "target": "Package",
               "version": "[4.1.0-beta1, )"
+            },
+            "nlog": {
+              "target": "Package",
+              "version": "[4.7.5, )"
             }
           },
           "imports": [
