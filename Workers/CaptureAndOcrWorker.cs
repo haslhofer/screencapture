@@ -85,7 +85,8 @@ namespace screencapture
                         //Reassemble pic
                         var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
                         RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
-                        bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
+                        Program._OverlayUx.SetBitmap(bmp);
+                        //bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
                         //
 
                         if (generateTextDump)
