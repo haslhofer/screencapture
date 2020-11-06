@@ -23,8 +23,9 @@ namespace screencapture
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
+        public static NoteUxManager _NoteUxManager; 
 
-        public static StickyNote _NoteForm;
+
 
         [STAThread]
         static int Main(
@@ -43,7 +44,6 @@ namespace screencapture
 
             FillTestData();
 
-
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
@@ -57,12 +57,13 @@ namespace screencapture
             Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
             myShowNote.Start();
 
+            
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            _NoteForm = new StickyNote("Test");
-            _NoteForm.Show();
+            
+            _NoteUxManager= new NoteUxManager();
             //Application.Run(_NoteForm);
             Application.Run();
 

@@ -13,7 +13,7 @@ namespace screencapture
 
     public class ShowNoteWorker
     {
-        private static string _searchText = "hundertwasser";
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         
         private static int sleepDefaultMS = 50;
 
@@ -26,18 +26,27 @@ namespace screencapture
                 ScreenState s;
                 if (Program._CaptureItems.TryDequeue(out s))
                 {
+                    Logger.Info("Found work item to dequeue");
                     System.Diagnostics.Debug.WriteLine(s.ToString());
-                    ScreenText foundScreenText = GetMatchingScreenText(s);
-                    if (foundScreenText !=null)
+
+                    NoteReference foundNote; //which note produced a hit
+                    ScreenText screenText; //what is the location and text on the screen that produced a hit
+
+                    GetMatchingNote(s, out foundNote, out screenText);
+                    
+                    if (foundNote!=null)
                     {
-                        System.Diagnostics.Debug.WriteLine("Found " + foundScreenText.Content);
-                        Program._NoteForm.ChangePos(foundScreenText.Position.Left, foundScreenText.Position.Top);
-                        Program._NoteForm.ShowNote();
+                        Logger.Info("Found Note text");
+                        //System.Diagnostics.Debug.WriteLine("Found ");
+                        Program._NoteUxManager.ShowNote(foundNote, screenText);
+                        //Program._NoteForm.ChangePos(foundScreenText.Position.Left, foundScreenText.Position.Top);
+                        
 
                     }
                     else
                     {
-                        Program._NoteForm.HideNote();
+                        Logger.Info("Did not find screen text" );
+                        Program._NoteUxManager.HideNotes();
                     }
                 }
 
@@ -53,19 +62,24 @@ namespace screencapture
         }
 
         //Look at the screen and see if you can find an anchor;
-        private static ScreenText GetMatchingScreenText(ScreenState s)
+        private static void GetMatchingNote(ScreenState s, out NoteReference foundNote, out ScreenText matchingScreenText)
         {
+            foundNote = null;
+            matchingScreenText = null;
+
             foreach (var aNote in Program._NoteReferences)
             {
                 foreach (var screenText in s.TextOnScreen)
                 {
                     if (screenText.Content.ToLower().Contains(aNote.Anchor))
                     {
-                        return screenText;
+                        foundNote = aNote; 
+                        matchingScreenText = screenText;
+                        return;
                     }
                 }
             }
-            return null;
+            return;
         }
 
         

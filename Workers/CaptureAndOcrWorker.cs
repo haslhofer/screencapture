@@ -14,6 +14,8 @@ namespace screencapture
 
     public class CaptureAndWorker
     {
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private enum FileTypeForSerialization
         {
             Jpeg = 1,
@@ -54,24 +56,37 @@ namespace screencapture
 
                 foreach (var aDisplay in displays)
                 {
+
                     MonitorInfo aMonitorInfo = new MonitorInfo();
                     aMonitorInfo.ID = deviceCount;
                     aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
 
                     string deviceName = aDisplay.DeviceName;
+                    Logger.Info("Before capture Screenshot {ScreenNr}", deviceCount);
 
                     //Take Screenshot
                     Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
                     string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
                     img.Save(path, ImageFormat.Jpeg);
+
+                    Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
+
                     aMonitorInfo.ImageFullPath = path;
                     Console.WriteLine("Captured at " + path);
 
                     if (detectText)
                     {
+                        Logger.Info("Before OCR {ScreenNr}", deviceCount);
                         //Do OCR
                         List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
                         ocrResults.AddRange(ocrText);
+                        Logger.Info("After OCR {ScreenNr}", deviceCount);
+
+                        //Reassemble pic
+                        var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
+                        RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
+                        bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
+                        //
 
                         if (generateTextDump)
                         {

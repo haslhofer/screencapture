@@ -12,20 +12,28 @@ namespace screencapture
 {
     public partial class StickyNote : Form
     {
-        private string _NoteText;
-        public StickyNote(string NoteText)
+        private NoteReference _noteReference;
+        Label _noteText;
+        
+        public StickyNote()
         {
-            _NoteText = NoteText;
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(400, 100);
-            Label b = new Label();
-            //b.TextChanged += ChangePos;
-            b.Text = NoteText;
-            this.Controls.Add(b);
             this.Opacity = 0.8;
             this.TopMost = true;
+            _noteText = new Label();
+            this.Controls.Add(_noteText);
 
+        }
+
+        public void InitNote(NoteReference r)
+        {
+            _noteReference = r;
+            InvokeUI(() => {
+                this._noteText.Text = r.Note;
+            });
+            
         }
 
         public void ChangePos(int x, int y)
