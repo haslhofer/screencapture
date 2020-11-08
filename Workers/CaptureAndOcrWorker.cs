@@ -27,7 +27,7 @@ namespace screencapture
 
         public static void CaptureAndWrite(
             string directory = "",
-            bool loopforever = false,
+            bool loopforever = true,
             bool detectText = true,
             bool generateTextDump = false,
             //bool reRenderText = false,
@@ -75,11 +75,26 @@ namespace screencapture
                     ocrResults.AddRange(ocrText);
                     Logger.Info("After OCR {ScreenNr}", deviceCount);
 
+                    /* //TBD
+                    {
+                        int count = 0;
+
+                         foreach (var snip in ocrText)
+                         {
+                             Program._ControllerUx.AddFloater(snip.Position.Left, snip.Position.Top, snip.Position.Right,  snip.Position.Bottom, snip.Content);
+                             //if (count > 10) break;
+                             count++;
+
+                         }
+                    } */
+
                     //Reassemble pic
-                    var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
-                    RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
-                    Program._OverlayUx.SetBitmap(bmp);
-                    Program._OverlayUx.ShowOverlay();
+                    // var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
+                    // RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
+                    // Program._OverlayUx.SetBitmap(bmp);
+                    // Program._OverlayUx.ShowOverlay();
+                    
+                    
                     //Program._OverlayUx.Show();
                     //bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
                     //
@@ -145,6 +160,7 @@ namespace screencapture
 
 
         }
+
         private static string GetFileName(FileTypeForSerialization fts, DateTime captureTime, string optionalFileName)
         {
             long ticks = captureTime.Ticks;

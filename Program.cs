@@ -25,15 +25,17 @@ namespace screencapture
         public static MonitorHelper.DisplayInfo _MonitorToWatch;
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
-        public static NoteUxManager _NoteUxManager; 
-        public static OverlayUx _OverlayUx;
+        //public static NoteUxManager _NoteUxManager; 
+        //public static OverlayUx _OverlayUx;
+
+        public static ControllerUx _ControllerUx;
 
 
 
         [STAThread]
         static int Main(
             string directory = "",
-            bool loopforever = false,
+            bool loopforever = true,
             bool detectText = true,
             bool generateTextDump = false,
             //bool reRenderText = false,
@@ -61,12 +63,15 @@ namespace screencapture
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            _NoteUxManager= new NoteUxManager();
 
-            _OverlayUx = new OverlayUx(_MonitorToWatch.MonitorArea.Top,_MonitorToWatch.MonitorArea.Left,_MonitorToWatch.MonitorArea.Bottom, _MonitorToWatch.MonitorArea.Right);
-            _OverlayUx.Show();
-            _OverlayUx.HideOverlay();
+            _ControllerUx = new ControllerUx();
+            _ControllerUx.Show();
+            
+            //_NoteUxManager= new NoteUxManager();
+
+            //_OverlayUx = new OverlayUx(_MonitorToWatch.MonitorArea.Top,_MonitorToWatch.MonitorArea.Left,_MonitorToWatch.MonitorArea.Bottom, _MonitorToWatch.MonitorArea.Right);
+            //_OverlayUx.Show();
+            //_OverlayUx.HideOverlay();
 
             //Application.Run(_NoteForm);
             //Start workers
@@ -105,8 +110,8 @@ namespace screencapture
         private static void FillTestData()
         {
             NoteReference r1 = new NoteReference();
-            r1.Anchor = "wenjun";
-            r1.Note = "Send a Note to Wenjun";
+            r1.Anchor = "dorsey";
+            r1.Note = "Twitter";
             _NoteReferences.Add(r1);
         }
 
