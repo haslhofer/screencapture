@@ -14,47 +14,75 @@ namespace screencapture
 {
     public partial class OverlayUx : Form
     {
-        
+
         private PictureBox _p;
-        public OverlayUx()
+        public OverlayUx(int Top, int Left, int Bottom, int Right)
         {
             InitializeComponent();
 
             this.StartPosition = FormStartPosition.Manual;
-            this.Location = new Point(100, 100);
-            this.Opacity = 0.8;
+            this.Location = new Point(Top, Left);
+            this.Size = new Size(Right - Left, Bottom - Top);
+            this.Opacity = 0.0;
             this.TopMost = true;
             _p = new PictureBox();
-            _p.Size = new Size(1000, 1000);
+            _p.Size = new Size(Right - Left, Bottom - Top);
             this.Controls.Add(_p);
 
         }
+
+        public void HideOverlay()
+        {
+            SetOpacity(0.1);
+        }
+        public void ShowOverlay()
+        {
+            SetOpacity(0.9);
+        }
+
+        private void SetOpacity(double opacity)
+        {
+            if (this._p.InvokeRequired)
+            {
+                InvokeUI(() =>
+                {
+                    this.Opacity = opacity;
+                });
+            }
+            else
+            {
+                this.Opacity = opacity;
+            }
+        }
+
 
         public void SetBitmap(System.Drawing.Bitmap b)
         {
             if (this._p.InvokeRequired)
             {
-                InvokeUI(() => {
-                _p.Image = b;
+                InvokeUI(() =>
+                {
+                    _p.Image = b;
                 });
-            
+
             }
             else
-            {_p.Image = b;}
-                
-            
-            
+            { _p.Image = b; }
+
+
+
         }
 
         public void ChangePos(int x, int y)
         {
-            InvokeUI(() => {
-            this.Location = new Point(x,y);
-            
+            InvokeUI(() =>
+            {
+                this.Location = new Point(x, y);
+
             });
         }
 
-        
+
         private void InvokeUI(Action a)
         {
             this.BeginInvoke(new MethodInvoker(a));

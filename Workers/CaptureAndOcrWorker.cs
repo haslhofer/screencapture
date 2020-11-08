@@ -15,7 +15,7 @@ namespace screencapture
     public class CaptureAndWorker
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
+        
         private enum FileTypeForSerialization
         {
             Jpeg = 1,
@@ -35,13 +35,6 @@ namespace screencapture
             )
         {
 
-
-            //Retrieve Monitor configuration, so we can enumerate all displays
-            MonitorHelper h = new MonitorHelper();
-            var displays = h.GetDisplays();
-
-
-
             ScreenCapture sc = new ScreenCapture();
 
             do
@@ -54,71 +47,73 @@ namespace screencapture
 
                 List<ScreenText> ocrResults = new List<ScreenText>();
 
-                foreach (var aDisplay in displays)
+                var aDisplay = Program._MonitorToWatch;
+
+                
+                MonitorInfo aMonitorInfo = new MonitorInfo();
+                aMonitorInfo.ID = deviceCount;
+                aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
+
+                string deviceName = aDisplay.DeviceName;
+                Logger.Info("Before capture Screenshot {ScreenNr}", deviceCount);
+
+                //Take Screenshot
+                Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
+                img.Save(path, ImageFormat.Jpeg);
+
+                Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
+
+                aMonitorInfo.ImageFullPath = path;
+                Console.WriteLine("Captured at " + path);
+
+                if (detectText)
                 {
+                    Logger.Info("Before OCR {ScreenNr}", deviceCount);
+                    //Do OCR
+                    List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
+                    ocrResults.AddRange(ocrText);
+                    Logger.Info("After OCR {ScreenNr}", deviceCount);
 
-                    MonitorInfo aMonitorInfo = new MonitorInfo();
-                    aMonitorInfo.ID = deviceCount;
-                    aMonitorInfo.Rect = new ScreenRectangle(aDisplay.MonitorArea);
+                    //Reassemble pic
+                    var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
+                    RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
+                    Program._OverlayUx.SetBitmap(bmp);
+                    Program._OverlayUx.ShowOverlay();
+                    //Program._OverlayUx.Show();
+                    //bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
+                    //
 
-                    string deviceName = aDisplay.DeviceName;
-                    Logger.Info("Before capture Screenshot {ScreenNr}", deviceCount);
-
-                    //Take Screenshot
-                    Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                    string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
-                    img.Save(path, ImageFormat.Jpeg);
-
-                    Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
-
-                    aMonitorInfo.ImageFullPath = path;
-                    Console.WriteLine("Captured at " + path);
-
-                    if (detectText)
+                    if (generateTextDump)
                     {
-                        Logger.Info("Before OCR {ScreenNr}", deviceCount);
-                        //Do OCR
-                        List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
-                        ocrResults.AddRange(ocrText);
-                        Logger.Info("After OCR {ScreenNr}", deviceCount);
-
-                        //Reassemble pic
-                        var bmp = RenderImage.GetWhiteBitmap(aDisplay.MonitorArea.Right - aDisplay.MonitorArea.Left, aDisplay.MonitorArea.Bottom - aDisplay.MonitorArea.Top);
-                        RenderImage.RenderBitmapFromTextSnippets(bmp, ocrText);
-                        Program._OverlayUx.SetBitmap(bmp);
-                        //bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
-                        //
-
-                        if (generateTextDump)
+                        if (ocrText != null && ocrText.Count > 0)
                         {
-                            if (ocrText != null && ocrText.Count > 0)
+
+                            string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
+                            StreamWriter writeToDisc = new StreamWriter(filePath);
+
+                            foreach (var aRes in ocrResults)
                             {
-
-                                string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
-                                StreamWriter writeToDisc = new StreamWriter(filePath);
-
-                                foreach (var aRes in ocrResults)
-                                {
-                                    writeToDisc.Write(aRes.Content + " ");
-                                }
-
-                                writeToDisc.Flush();
-                                writeToDisc.Close();
+                                writeToDisc.Write(aRes.Content + " ");
                             }
+
+                            writeToDisc.Flush();
+                            writeToDisc.Close();
                         }
-
-
-
-                        /*
-                        // Re-render bitmap
-                        Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-                        RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
-                        b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
-                        */
                     }
-                    deviceCount++;
-                    monitorInfos.Add(aMonitorInfo);
+
+
+
+                    /*
+                    // Re-render bitmap
+                    Bitmap b = RenderImage.GetWhiteBitmap(aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                    RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
+                    b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
+                    */
                 }
+                deviceCount++;
+                monitorInfos.Add(aMonitorInfo);
+                
 
                 ScreenState s = new ScreenState();
                 if (detectProcesses)

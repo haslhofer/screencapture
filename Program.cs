@@ -21,6 +21,8 @@ namespace screencapture
 
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        
+        public static MonitorHelper.DisplayInfo _MonitorToWatch;
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
         public static NoteUxManager _NoteUxManager; 
@@ -31,7 +33,7 @@ namespace screencapture
         [STAThread]
         static int Main(
             string directory = "",
-            bool loopforever = true,
+            bool loopforever = false,
             bool detectText = true,
             bool generateTextDump = false,
             //bool reRenderText = false,
@@ -50,6 +52,23 @@ namespace screencapture
 
             if (directory == String.Empty) { directory = @"c:\data\temp2\"; }
 
+            //Determine the screen to watch
+               
+            MonitorHelper h = new MonitorHelper();
+            var displays = h.GetDisplays();
+            _MonitorToWatch= displays[1];
+
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            
+            _NoteUxManager= new NoteUxManager();
+
+            _OverlayUx = new OverlayUx(_MonitorToWatch.MonitorArea.Top,_MonitorToWatch.MonitorArea.Left,_MonitorToWatch.MonitorArea.Bottom, _MonitorToWatch.MonitorArea.Right);
+            _OverlayUx.Show();
+            _OverlayUx.HideOverlay();
+
+            //Application.Run(_NoteForm);
             //Start workers
 
             Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses));
@@ -58,20 +77,6 @@ namespace screencapture
             Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
             myShowNote.Start();
 
-            
-
-            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            
-            _NoteUxManager= new NoteUxManager();
-            
-            _OverlayUx = new OverlayUx();
-            _OverlayUx.Show();
-
-
-
-            //Application.Run(_NoteForm);
             Application.Run();
 
 
