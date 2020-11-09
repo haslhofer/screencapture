@@ -78,6 +78,7 @@ namespace screencapture
         private static  List<Tuple<NoteReference, ScreenText>> GetMatchingNote(ScreenState s)
         {
             List<Tuple<NoteReference, ScreenText>> res = new List<Tuple<NoteReference, ScreenText>>();
+            List<NoteReference> foundNotes = new List<NoteReference>();
 
             
             foreach (var aNote in Program._NoteReferences)
@@ -86,7 +87,11 @@ namespace screencapture
                 {
                     if (screenText.Content.ToLower().Contains(aNote.Anchor))
                     {
-                        res.Add(new Tuple<NoteReference, ScreenText>(aNote, screenText));
+                        if (!foundNotes.Contains(aNote))
+                        {
+                            res.Add(new Tuple<NoteReference, ScreenText>(aNote, screenText));
+                            foundNotes.Add(aNote);
+                        }
                         
                     }
                 }

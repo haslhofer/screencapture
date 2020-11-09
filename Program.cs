@@ -66,6 +66,7 @@ namespace screencapture
 
             _ControllerUx = new ControllerUx();
             _ControllerUx.Show();
+            _ControllerUx.Hide();
             
             //_NoteUxManager= new NoteUxManager();
 
@@ -110,8 +111,8 @@ namespace screencapture
         private static void FillTestData()
         {
             NoteReference r1 = new NoteReference();
-            r1.Anchor = "dorsey";
-            r1.Note = "Twitter";
+            r1.Anchor = "samnerkar";
+            r1.Note = "Ask about Satya AI365 slide deck";
             _NoteReferences.Add(r1);
         }
 

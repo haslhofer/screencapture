@@ -20,25 +20,32 @@ namespace screencapture
         {
             InitializeComponent();
 
+            Size hardCodedSize = new Size(100,100);
+
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(Left, Top);
-            this.Size = new Size(Right - Left, Bottom - Top);
-            this.Opacity = 0.5;
+            //this.Size = new Size(Right - Left, Bottom - Top);
+            this.Size = hardCodedSize;
+            this.Opacity = 0.9;
+            this.BackColor = Color.Yellow;
             this.TopMost = true;
             _p = new Label();
             _p.Paint += label1_Paint;
+            _p.Font = new Font(FontFamily.GenericSansSerif, 14);
             
             _p.Text = text;
-            _p.BorderStyle = BorderStyle.FixedSingle;
+            //_p.BorderStyle = BorderStyle.FixedSingle;
             
-            _p.Size = new Size(Right - Left, Bottom - Top);
+            //_p.Size = new Size(Right - Left, Bottom - Top);
+            _p.Size = hardCodedSize;
+
             this.Controls.Add(_p);
 
         }
 
         void label1_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics,_p.DisplayRectangle, Color.Blue, ButtonBorderStyle.Solid);
+            //ControlPaint.DrawBorder(e.Graphics,_p.DisplayRectangle, Color.Blue, ButtonBorderStyle.Solid);
         }
 
         public void HideOverlay()
