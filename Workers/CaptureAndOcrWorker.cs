@@ -26,12 +26,12 @@ namespace screencapture
         private static int sleepDefaultMS = 1000;
 
         public static void CaptureAndWrite(
-            string directory = "",
-            bool loopforever = true,
-            bool detectText = true,
-            bool generateTextDump = false,
+            string directory ,
+            bool loopforever ,
+            bool detectText ,
+            bool generateTextDump ,
             //bool reRenderText = false,
-            bool detectProcesses = false
+            bool detectProcesses 
             )
         {
 
@@ -104,7 +104,9 @@ namespace screencapture
                         if (ocrText != null && ocrText.Count > 0)
                         {
 
-                            string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
+                            string filePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\query.txt";
+
+                            //string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
                             StreamWriter writeToDisc = new StreamWriter(filePath);
 
                             foreach (var aRes in ocrResults)
@@ -114,6 +116,24 @@ namespace screencapture
 
                             writeToDisc.Flush();
                             writeToDisc.Close();
+
+                            string c0 = string.Empty;
+                            string c1 = string.Empty;
+
+                            var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+                            if (confScores.Count >0)
+                            {
+                                c0 = confScores[0].GetDebug();
+                            }
+                            if (confScores.Count >1)
+                            {
+                                c1 = confScores[1].GetDebug();
+                            }
+                            Program._ControllerUx.SetConfidence(c0, c1);
+                            foreach (var aScore in confScores)
+                            {
+                                Logger.Trace(aScore.GetDebug());
+                            }
                         }
                     }
 

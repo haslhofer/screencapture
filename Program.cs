@@ -37,13 +37,17 @@ namespace screencapture
             string directory = "",
             bool loopforever = true,
             bool detectText = true,
-            bool generateTextDump = false,
+            bool generateTextDump = true,
             //bool reRenderText = false,
             bool detectProcesses = false
 
 
             )
         {
+            //TestPython();
+            //return 0;
+
+
             ConfigureLogging();
             Logger.Info("Startup");
 
@@ -66,7 +70,7 @@ namespace screencapture
 
             _ControllerUx = new ControllerUx();
             _ControllerUx.Show();
-            _ControllerUx.Hide();
+            //_ControllerUx.Hide();
             
             //_NoteUxManager= new NoteUxManager();
 
@@ -80,8 +84,8 @@ namespace screencapture
             Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses));
             myCaptureThread.Start();
 
-            Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
-            myShowNote.Start();
+            //Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
+            //myShowNote.Start();
 
             Application.Run();
 
@@ -115,6 +119,12 @@ namespace screencapture
             r1.Note = "Ask about Satya AI365 slide deck";
             _NoteReferences.Add(r1);
         }
+
+        private static void TestPython()
+        {
+            LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+        }
+
 
 
     }

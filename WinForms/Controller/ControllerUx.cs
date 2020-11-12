@@ -13,6 +13,8 @@ namespace screencapture
     public partial class ControllerUx : Form
     {
         private List<FloaterUx> _Floaters = new List<FloaterUx>();
+        private Label score0 = new Label();
+        private Label score1 = new Label();
         private int _Counter = 1;
         public ControllerUx()
         {
@@ -22,6 +24,16 @@ namespace screencapture
             this.Location = new Point(300, 300);
             this.Opacity = 0.8;
             this.TopMost = true;
+
+            score0.Text = "none";
+            score0.Width = 300;
+
+            score1.Text = "none";
+            score1.Width = 300;
+            score1.Location = new Point(0, 20);
+
+            this.Controls.Add(score0);
+            this.Controls.Add(score1);
 
             Button b = new Button();
             b.Text = "PressMe";
@@ -41,6 +53,25 @@ namespace screencapture
             _Floaters.Add(ux);
         }
 
+        public void SetConfidence(string c0, string c1)
+        {
+            if (this.InvokeRequired)
+            {
+                InvokeUI(() =>
+                {
+                    score0.Text = c0;
+                    score1.Text = c1;
+                });
+            }
+            else
+            {
+                score0.Text = c0;
+                score1.Text = c1;
+            }
+
+
+        }
+
         public void DeleteFloaters()
         {
             foreach (var aFloater in _Floaters)
@@ -48,14 +79,15 @@ namespace screencapture
                 if (this.InvokeRequired)
                 {
                     InvokeUI(() =>
-                    {    aFloater.Close();
+                    {
+                        aFloater.Close();
                     });
                 }
                 else
                 {
                     aFloater.Close();
                 }
-             
+
             }
             _Floaters = new List<FloaterUx>();
         }
