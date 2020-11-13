@@ -107,15 +107,19 @@ namespace screencapture
                             string filePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\query.txt";
 
                             //string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
+                            StringWriter writeToMemory = new StringWriter();
                             StreamWriter writeToDisc = new StreamWriter(filePath);
 
                             foreach (var aRes in ocrResults)
                             {
-                                writeToDisc.Write(aRes.Content + " ");
+                                string textToWrite = CleanString(aRes.Content) + " ";
+                                writeToDisc.Write(textToWrite);
+                                writeToMemory.Write(textToWrite);
                             }
 
                             writeToDisc.Flush();
                             writeToDisc.Close();
+                            string allText = writeToMemory.ToString();
 
                             string c0 = string.Empty;
                             string c1 = string.Empty;
@@ -129,7 +133,13 @@ namespace screencapture
                             {
                                 c1 = confScores[1].GetDebug();
                             }
-                            Program._ControllerUx.SetConfidence(c0, c1);
+
+                            AssessmentResult r = new AssessmentResult();
+                            r.ConfidenceScoreResults = confScores;
+                            r.CapturedText = allText;
+
+
+                            Program._ControllerUx.SetConfidence(r);
                             foreach (var aScore in confScores)
                             {
                                 Logger.Trace(aScore.GetDebug());
@@ -216,6 +226,23 @@ namespace screencapture
                 case FileTypeForSerialization.RawText: return "txt";
                 default: throw new Exception("Unknown FileTypeForSerialization");
             }
+        }
+
+        private static string CleanString(string x)
+        {
+            StringWriter w = new StringWriter();
+            foreach (char c in x)
+            {
+                if (((int)c)<128)
+                { 
+                    w.Write(c);
+                } 
+                else
+                {
+                    w.Write(' ');
+                }
+            }
+            return w.ToString();
         }
     }
 }

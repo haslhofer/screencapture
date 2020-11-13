@@ -1,0 +1,11 @@
+using System.Collections.Generic;
+
+namespace screencapture
+{
+    public class AssessmentResult
+    {
+        public List<ConfidenceScore> ConfidenceScoreResults {get;set;}
+        public string CapturedText {get;set;}
+
+    }
+}

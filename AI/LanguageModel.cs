@@ -28,7 +28,7 @@ namespace screencapture
                     {
                         string tag = reader.ReadLine();
                         string confidence = reader.ReadLine();
-                        ConfidenceScore s = new  ConfidenceScore();
+                        ConfidenceScore s = new ConfidenceScore();
                         s.Hashtag = tag;
                         s.Confidence = float.Parse(confidence);
                         res.Add(s);
@@ -36,6 +36,33 @@ namespace screencapture
                     return res;
                 }
             }
+        }
+
+
+        public static void UpdateHashtag(string tag, string newText)
+        {
+            int maxLen = 2000;
+
+            string basePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\";
+            string fullPath = basePath + tag + ".txt";
+
+            FileStream f = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Read);
+            StreamReader r = new StreamReader(f);
+            string oldText = r.ReadToEnd();
+            r.Close();
+            f.Close();
+
+            string fullText = oldText + " " + newText;
+            if (fullText.Length > maxLen)
+            {
+                fullText = fullText.Substring(fullText.Length - maxLen);
+            }
+            f = new FileStream(fullPath, FileMode.Truncate, FileAccess.Write);
+            StreamWriter w = new StreamWriter(f);
+            w.Write(fullText);
+            w.Flush();
+            w.Close();
+            f.Close();
         }
     }
 }

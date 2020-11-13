@@ -13,9 +13,11 @@ namespace screencapture
     public partial class ControllerUx : Form
     {
         private List<FloaterUx> _Floaters = new List<FloaterUx>();
-        private Label score0 = new Label();
-        private Label score1 = new Label();
+        private Button score0 = new Button();
+        private Button score1 = new Button();
         private int _Counter = 1;
+
+        private AssessmentResult _AssessmentResult;
         public ControllerUx()
         {
 
@@ -27,10 +29,12 @@ namespace screencapture
 
             score0.Text = "none";
             score0.Width = 300;
+            score0.Click += score0_click;
 
             score1.Text = "none";
             score1.Width = 300;
             score1.Location = new Point(0, 20);
+            score1.Click += score1_click;
 
             this.Controls.Add(score0);
             this.Controls.Add(score1);
@@ -43,6 +47,24 @@ namespace screencapture
 
         }
 
+        void score0_click(Object sender, EventArgs e)
+        {
+            UpdateText(0);
+        }
+
+        void score1_click(Object sender, EventArgs e)
+        {
+            UpdateText(1);
+        }
+
+        private void UpdateText(int index)
+        {
+            string hashTag = _AssessmentResult.ConfidenceScoreResults[index].Hashtag;
+            LanguageModel.UpdateHashtag(hashTag, _AssessmentResult.CapturedText);
+        }
+
+
+
         void myButton_Click(Object sender, EventArgs e)
         {
             int startPos = _Counter * 10;
@@ -53,8 +75,22 @@ namespace screencapture
             _Floaters.Add(ux);
         }
 
-        public void SetConfidence(string c0, string c1)
+        public void SetConfidence(AssessmentResult r)
         {
+            string c0 = "<Empty>";
+            string c1 = "<Empty>";
+
+            _AssessmentResult = r;
+            if (r.ConfidenceScoreResults.Count > 0)
+            {
+                c0 = r.ConfidenceScoreResults[0].GetDebug();
+            }
+            if (r.ConfidenceScoreResults.Count > 1)
+            {
+                c1 = r.ConfidenceScoreResults[1].GetDebug();
+            }
+
+
             if (this.InvokeRequired)
             {
                 InvokeUI(() =>
@@ -71,6 +107,8 @@ namespace screencapture
 
 
         }
+
+
 
         public void DeleteFloaters()
         {
