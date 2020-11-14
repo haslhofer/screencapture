@@ -103,6 +103,7 @@ namespace screencapture
                     {
                         if (ocrText != null && ocrText.Count > 0)
                         {
+                            Logger.Info("Before generate TextDump");
 
                             string filePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\query.txt";
 
@@ -121,9 +122,12 @@ namespace screencapture
                             writeToDisc.Close();
                             string allText = writeToMemory.ToString();
 
+                            Logger.Info("After generate TextDump");
+
                             string c0 = string.Empty;
                             string c1 = string.Empty;
 
+                            Logger.Info("Before run language model");
                             var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
                             if (confScores.Count >0)
                             {
@@ -133,6 +137,7 @@ namespace screencapture
                             {
                                 c1 = confScores[1].GetDebug();
                             }
+                            Logger.Info("After run language model");
 
                             AssessmentResult r = new AssessmentResult();
                             r.ConfidenceScoreResults = confScores;
