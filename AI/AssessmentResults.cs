@@ -6,6 +6,7 @@ namespace screencapture
     {
         public List<ConfidenceScore> ConfidenceScoreResults {get;set;}
         public string CapturedText {get;set;}
+        public string PathToImage {get;set;}
 
     }
 }

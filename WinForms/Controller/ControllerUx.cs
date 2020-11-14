@@ -61,6 +61,7 @@ namespace screencapture
         {
             string hashTag = _AssessmentResult.ConfidenceScoreResults[index].Hashtag;
             LanguageModel.UpdateHashtag(hashTag, _AssessmentResult.CapturedText);
+            NoteCapture.AddScreenshot(hashTag, _AssessmentResult.PathToImage);
         }
 
 

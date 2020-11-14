@@ -18,4 +18,8 @@
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)system.commandline.dragonfruit\0.3.0-alpha.20253.1\build\netstandard2.0\System.CommandLine.DragonFruit.props" Condition="Exists('$(NuGetPackageRoot)system.commandline.dragonfruit\0.3.0-alpha.20253.1\build\netstandard2.0\System.CommandLine.DragonFruit.props')" />
   </ImportGroup>
+  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgNuGet_CommandLine Condition=" '$(PkgNuGet_CommandLine)' == '' ">C:\Users\gerhas\.nuget\packages\nuget.commandline\4.6.2</PkgNuGet_CommandLine>
+    <PkgNewtonsoft_Json Condition=" '$(PkgNewtonsoft_Json)' == '' ">C:\Users\gerhas\.nuget\packages\newtonsoft.json\9.0.1</PkgNewtonsoft_Json>
+  </PropertyGroup>
 </Project>

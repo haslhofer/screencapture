@@ -52,6 +52,10 @@
               "target": "Package",
               "version": "[4.1.0-beta1, )"
             },
+            "docxcore": {
+              "target": "Package",
+              "version": "[1.0.9, )"
+            },
             "nlog": {
               "target": "Package",
               "version": "[4.7.5, )"

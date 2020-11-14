@@ -137,6 +137,7 @@ namespace screencapture
                             AssessmentResult r = new AssessmentResult();
                             r.ConfidenceScoreResults = confScores;
                             r.CapturedText = allText;
+                            r.PathToImage = path;
 
 
                             Program._ControllerUx.SetConfidence(r);
