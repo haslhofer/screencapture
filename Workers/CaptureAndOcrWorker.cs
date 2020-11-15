@@ -23,7 +23,7 @@ namespace screencapture
             RawText = 3
 
         }
-        private static int sleepDefaultMS = 1000;
+        private static int sleepDefaultMS = 1;
 
         public static void CaptureAndWrite(
             string directory ,
@@ -128,7 +128,8 @@ namespace screencapture
                             string c1 = string.Empty;
 
                             Logger.Info("Before run language model");
-                            var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+                            //var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+                            var confScores = LanguageModel.GetConfidenceFromServer();
                             if (confScores.Count >0)
                             {
                                 c0 = confScores[0].GetDebug();

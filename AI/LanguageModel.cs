@@ -1,13 +1,53 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Data;
 using System.Collections.Generic;
+using System.Collections;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace screencapture
 {
+    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
+
+    public class Root    
+    {
+        public List<List<ConfidenceResponse>> Table1 { get; set; } 
+    }
+
+
+    public class ConfidenceResponse
+    {
+        public float confidence {get;set;}
+        public string hashtag {get;set;}
+        
+    }
+
     public class LanguageModel
     {
 
+        public static List<ConfidenceScore> GetConfidenceFromServer()
+        {
+            List<ConfidenceScore> res = new List<ConfidenceScore>();
+
+            var client = new HttpClient();
+            var definition = new[] { new { confidence = 0.0, hashtag = "" }};
+            string jsonContent = client.GetStringAsync("http://127.0.0.1:5000/recipes").Result;
+            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(jsonContent); 
+
+            foreach (var x in myDeserializedClass.Table1)
+            {
+                ConfidenceScore s = new ConfidenceScore();
+                s.Confidence = x[0].confidence;
+                s.Hashtag = x[0].hashtag;
+                res.Add(s);
+            }
+
+            return res;
+
+        }
         public static List<ConfidenceScore> RunCmd(string cmd, string args, string workingDir)
         {
             List<ConfidenceScore> res = new List<ConfidenceScore>();

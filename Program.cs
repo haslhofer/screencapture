@@ -44,6 +44,8 @@ namespace screencapture
 
             )
         {
+
+            //LanguageModel.GetConfidenceFromServer();
             //TestPython();
             //return 0;
 
