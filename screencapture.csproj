@@ -1,13 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <UserSecretsId>b7ddc97f-06b1-44f3-874b-34ae84c13930</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="docxcore" Version="1.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="3.20.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.22.0" />
     <PackageReference Include="newtonsoft.json" Version="12.0.3" />
     <PackageReference Include="nlog" Version="4.7.5" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20253.1" />

@@ -15,6 +15,7 @@ namespace screencapture
         private List<FloaterUx> _Floaters = new List<FloaterUx>();
         private Button score0 = new Button();
         private Button score1 = new Button();
+        private Label conf = new Label();
         private int _Counter = 1;
 
         private AssessmentResult _AssessmentResult;
@@ -29,22 +30,24 @@ namespace screencapture
 
             score0.Text = "none";
             score0.Width = 300;
+            score0.Height = 50;
+            score0.ForeColor = Color.DarkOrange;
+            score0.Font = new Font("Tahoma", 30, FontStyle.Bold );
             score0.Click += score0_click;
 
             score1.Text = "none";
+            
             score1.Width = 300;
-            score1.Location = new Point(0, 20);
+            score1.Location = new Point(0, 50);
             score1.Click += score1_click;
+
+            conf.Location = new Point(0, 70);
 
             this.Controls.Add(score0);
             this.Controls.Add(score1);
+            this.Controls.Add(conf);
 
-            Button b = new Button();
-            b.Text = "PressMe";
-            b.Click += myButton_Click;
-
-            this.Controls.Add(b);
-
+          
         }
 
         void score0_click(Object sender, EventArgs e)
@@ -57,11 +60,11 @@ namespace screencapture
             UpdateText(1);
         }
 
-        private void UpdateText(int index)
+        private async void UpdateText(int index)
         {
             string hashTag = _AssessmentResult.ConfidenceScoreResults[index].Hashtag;
             LanguageModel.UpdateHashtag(hashTag, _AssessmentResult.CapturedText);
-            NoteCapture.AddScreenshot(hashTag, _AssessmentResult.PathToImage);
+            await OneNoteCapture.AppendImage(_AssessmentResult.PathToImage, Configurator.GetPageIdFromHashTag(hashTag));
         }
 
 
@@ -80,11 +83,13 @@ namespace screencapture
         {
             string c0 = "<Empty>";
             string c1 = "<Empty>";
+            string confidenceText = "unknown";
 
             _AssessmentResult = r;
             if (r.ConfidenceScoreResults.Count > 0)
             {
                 c0 = r.ConfidenceScoreResults[0].GetDebug();
+                confidenceText = r.ConfidenceScoreResults[0].Confidence.ToString();
             }
             if (r.ConfidenceScoreResults.Count > 1)
             {
@@ -98,16 +103,21 @@ namespace screencapture
                 {
                     score0.Text = c0;
                     score1.Text = c1;
+                    conf.Text = confidenceText;
+                    
                 });
             }
             else
             {
                 score0.Text = c0;
                 score1.Text = c1;
+                conf.Text = confidenceText;
             }
 
 
         }
+
+        
 
 
 

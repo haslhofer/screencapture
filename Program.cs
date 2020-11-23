@@ -60,6 +60,13 @@ namespace screencapture
 
             if (directory == String.Empty) { directory = @"c:\data\temp2\"; }
 
+            //Init where to store the images
+            OneNoteCapture.Init();
+
+            //Init which pages we'll use
+            Configurator.Init();
+
+
             //Determine the screen to watch
                
             MonitorHelper h = new MonitorHelper();

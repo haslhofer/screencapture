@@ -7,7 +7,8 @@ namespace screencapture
 
         public string GetDebug()
         {
-            return "Hashtag:" + Hashtag + " Confidence:" + Confidence.ToString();
+            //return "Hashtag:" + Hashtag + " Confidence:" + Confidence.ToString();
+            return "#" + Hashtag;
         }
     }
 }
