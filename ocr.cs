@@ -29,7 +29,7 @@ namespace screencapture
                     if (iter.TryGetBoundingBox(PageIteratorLevel.Block,out b))
                     {
                         string text = iter.GetText(PageIteratorLevel.Block);
-                        var Fonts = iter.GetWordFontAttributes();
+                        
                         ScreenText t = new ScreenText();
                         t.Content = text;
                         t.ImageID = monitorID;

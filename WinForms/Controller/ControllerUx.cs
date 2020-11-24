@@ -16,6 +16,7 @@ namespace screencapture
         private Button score0 = new Button();
         private Button score1 = new Button();
         private Label conf = new Label();
+        private ListBox _entities = new ListBox();
         private int _Counter = 1;
 
         private AssessmentResult _AssessmentResult;
@@ -32,22 +33,33 @@ namespace screencapture
             score0.Width = 300;
             score0.Height = 50;
             score0.ForeColor = Color.DarkOrange;
-            score0.Font = new Font("Tahoma", 30, FontStyle.Bold );
+            score0.Font = new Font("Tahoma", 20, FontStyle.Bold);
             score0.Click += score0_click;
 
             score1.Text = "none";
-            
+
             score1.Width = 300;
             score1.Location = new Point(0, 50);
             score1.Click += score1_click;
+            score1.Visible = false;
 
+            //Confidence
             conf.Location = new Point(0, 70);
+
+            //Entities
+            _entities.Location = new Point(0, 100);
+            _entities.Items.Add("TestItem1");
+            _entities.Items.Add("TestItem2");
+
+
 
             this.Controls.Add(score0);
             this.Controls.Add(score1);
             this.Controls.Add(conf);
+            this.Controls.Add(_entities);
 
-          
+
+
         }
 
         void score0_click(Object sender, EventArgs e)
@@ -85,10 +97,15 @@ namespace screencapture
             string c1 = "<Empty>";
             string confidenceText = "unknown";
 
+            if (r.RecognizedEntities == null)
+            {
+                r.RecognizedEntities = new List<NerResponse>();
+            }
+
             _AssessmentResult = r;
             if (r.ConfidenceScoreResults.Count > 0)
             {
-                c0 = r.ConfidenceScoreResults[0].GetDebug();
+                c0 = "OneNote: " + r.ConfidenceScoreResults[0].GetDebug();
                 confidenceText = r.ConfidenceScoreResults[0].Confidence.ToString();
             }
             if (r.ConfidenceScoreResults.Count > 1)
@@ -104,7 +121,14 @@ namespace screencapture
                     score0.Text = c0;
                     score1.Text = c1;
                     conf.Text = confidenceText;
-                    
+                    _entities.Items.Clear();
+
+                   /*  foreach (var aNer in r.RecognizedEntities)
+                    {
+                        _entities.Items.Add(aNer.text + ":" + aNer.count.ToString());
+                    } */
+
+
                 });
             }
             else
@@ -112,12 +136,19 @@ namespace screencapture
                 score0.Text = c0;
                 score1.Text = c1;
                 conf.Text = confidenceText;
+                _entities.Items.Clear();
+
+                /* foreach (var aNer in r.RecognizedEntities)
+                {
+                    _entities.Items.Add(aNer.text);
+                } */
+
             }
 
 
         }
 
-        
+
 
 
 

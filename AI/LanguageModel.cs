@@ -12,9 +12,21 @@ namespace screencapture
 {
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
 
+    public class NerRoot    
+    {
+        public List<List<NerResponse>> Table1 { get; set; } 
+    }
     public class Root    
     {
         public List<List<ConfidenceResponse>> Table1 { get; set; } 
+    }
+
+    public class NerResponse
+    {
+        public int count {get;set;}
+        public string label {get;set;}
+        public string text {get;set;}
+        
     }
 
 
@@ -27,6 +39,28 @@ namespace screencapture
 
     public class LanguageModel
     {
+
+        public static List<NerResponse> GetNerFromServer()
+        {
+            List<NerResponse> res = new List<NerResponse>();
+
+            var client = new HttpClient();
+            var definition = new[] { new { confidence = 0.0, hashtag = "" }};
+            string jsonContent = client.GetStringAsync("http://127.0.0.1:5000/ner").Result;
+            NerRoot myDeserializedClass = JsonConvert.DeserializeObject<NerRoot>(jsonContent); 
+
+            foreach (var x in myDeserializedClass.Table1)
+            {
+                NerResponse s = new NerResponse();
+                s.text  = x[0].text;
+                s.label = x[0].label;
+                s.count = x[0].count;
+                res.Add(s);
+            }
+
+            return res;
+
+        }
 
         public static List<ConfidenceScore> GetConfidenceFromServer()
         {
@@ -81,7 +115,8 @@ namespace screencapture
 
         public static void UpdateHashtag(string tag, string newText)
         {
-            int maxLen = 2000;
+            int maxLenNewToken = 300;
+            int maxLen = 1000;
 
             string basePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\";
             string fullPath = basePath + tag + ".txt";
@@ -92,11 +127,11 @@ namespace screencapture
             r.Close();
             f.Close();
 
-            string fullText = oldText + " " + newText;
-            if (fullText.Length > maxLen)
-            {
-                fullText = fullText.Substring(fullText.Length - maxLen);
-            }
+            //Prepend so classifier runs on most recent text
+            string fullText = (newText.Substring(0,Math.Min(newText.Length, maxLenNewToken)) + " " +  oldText);
+            if (fullText.Length > maxLen) fullText = fullText.Substring(0, maxLen);
+
+            
             f = new FileStream(fullPath, FileMode.Truncate, FileAccess.Write);
             StreamWriter w = new StreamWriter(f);
             w.Write(fullText);

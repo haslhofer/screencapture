@@ -109,18 +109,23 @@ namespace screencapture
 
                             //string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
                             StringWriter writeToMemory = new StringWriter();
-                            StreamWriter writeToDisc = new StreamWriter(filePath);
-
                             foreach (var aRes in ocrResults)
                             {
-                                string textToWrite = CleanString(aRes.Content) + " ";
-                                writeToDisc.Write(textToWrite);
-                                writeToMemory.Write(textToWrite);
+                                writeToMemory.Write(CleanString(aRes.Content) + " ");
                             }
 
+                            string allText = CleanString(writeToMemory.ToString());
+
+                            //skip beginning
+                            if (allText.Length > 50)
+                            {
+                                allText = allText.Substring(50);
+                            }
+
+                            StreamWriter writeToDisc = new StreamWriter(filePath);
+                            writeToDisc.Write(allText);
                             writeToDisc.Flush();
                             writeToDisc.Close();
-                            string allText = writeToMemory.ToString();
 
                             Logger.Info("After generate TextDump");
 
@@ -129,6 +134,8 @@ namespace screencapture
 
                             Logger.Info("Before run language model");
                             //var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+
+                            //var nerResult = LanguageModel.GetNerFromServer();
                             var confScores = LanguageModel.GetConfidenceFromServer();
                             if (confScores.Count >0)
                             {
@@ -144,6 +151,7 @@ namespace screencapture
                             r.ConfidenceScoreResults = confScores;
                             r.CapturedText = allText;
                             r.PathToImage = path;
+                            //r.RecognizedEntities = nerResult;
 
 
                             Program._ControllerUx.SetConfidence(r);
@@ -237,17 +245,26 @@ namespace screencapture
 
         private static string CleanString(string x)
         {
+            bool prevIsWhiteSpace = false;
+
             StringWriter w = new StringWriter();
             foreach (char c in x)
             {
-                if (((int)c)<128)
-                { 
-                    w.Write(c);
-                } 
-                else
+                char thisChar = c;
+                if (((int)thisChar)>=128)
                 {
-                    w.Write(' ');
+                    thisChar  = (char)' ';
                 }
+
+                bool currIsWhiteSpace = char.IsWhiteSpace(thisChar);
+                
+                if (!(prevIsWhiteSpace && currIsWhiteSpace))
+                {
+                    w.Write(thisChar);
+                }
+
+                prevIsWhiteSpace = currIsWhiteSpace;
+
             }
             return w.ToString();
         }
