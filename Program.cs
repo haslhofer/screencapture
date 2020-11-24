@@ -65,6 +65,7 @@ namespace screencapture
 
             //Init which pages we'll use
             Configurator.Init();
+            Configurator.WriteConfig();
 
 
             //Determine the screen to watch

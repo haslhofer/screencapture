@@ -8,7 +8,7 @@ namespace screencapture
     public class Configurator
     {
         private static string HashTagConfigPath =@"C:\Users\gerhas\Documents\GitHub\hashtag\text\config.txt";
-        private static List<string> OptedInPages = new List<string>() {"AI", "Shopping"};
+        private static List<string> OptedInPages = new List<string>() {"AI", "News"};
         public static IEnumerable<OneNoteDescriptor> OptedInOneNotes {get;set;}
 
 
@@ -32,7 +32,7 @@ namespace screencapture
             }
             w.Flush();
             w.Close();
-            f.Flush();
+            
             f.Close();
         }
 
