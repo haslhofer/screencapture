@@ -48,6 +48,7 @@ namespace screencapture
 
             //Entities
             _entities.Location = new Point(0, 100);
+            _entities.Size = new Size(400,800);
             _entities.Items.Add("TestItem1");
             _entities.Items.Add("TestItem2");
 
@@ -123,10 +124,12 @@ namespace screencapture
                     conf.Text = confidenceText;
                     _entities.Items.Clear();
 
-                   /*  foreach (var aNer in r.RecognizedEntities)
+                    var sorted = from x in r.RecognizedEntities orderby x.text select x.text;
+
+                    foreach (var aNer in sorted)
                     {
-                        _entities.Items.Add(aNer.text + ":" + aNer.count.ToString());
-                    } */
+                        _entities.Items.Add(aNer);
+                    }
 
 
                 });
@@ -138,10 +141,10 @@ namespace screencapture
                 conf.Text = confidenceText;
                 _entities.Items.Clear();
 
-                /* foreach (var aNer in r.RecognizedEntities)
+                foreach (var aNer in r.RecognizedEntities)
                 {
                     _entities.Items.Add(aNer.text);
-                } */
+                }
 
             }
 

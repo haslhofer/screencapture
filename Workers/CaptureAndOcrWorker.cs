@@ -120,11 +120,11 @@ namespace screencapture
                             string allText = CleanString(ocrFinal);
 
                             //skip beginning
-                            if (allText.Length > 50)
+                           /*  if (allText.Length > 50)
                             {
                                 allText = allText.Substring(50);
                             }
-
+ */
                             StreamWriter writeToDisc = new StreamWriter(filePath);
                             writeToDisc.Write(allText);
                             writeToDisc.Flush();
@@ -136,9 +136,21 @@ namespace screencapture
                             string c1 = string.Empty;
 
                             Logger.Info("Before run language model");
-                            //var confScores = LanguageModel.RunCmd(@"c:\Users\gerhas\Documents\GitHub\hashtag\test.py", string.Empty, @"c:\Users\gerhas\Documents\GitHub\hashtag");
+                            
 
-                            //var nerResult = LanguageModel.GetNerFromServer();
+                            var nerResult = LanguageModel.GetNerFromServer();
+
+                            List<NerResponse> finalNer = new List<NerResponse>();
+                            foreach (var aNer in nerResult)
+                            {
+                                if (NameClean.IsHighConfidenceName(aNer.text))
+                                {
+                                    finalNer.Add(aNer);
+                                }
+                                
+                            }
+
+
                             var confScores = LanguageModel.GetConfidenceFromServer();
                             if (confScores.Count >0)
                             {
@@ -154,7 +166,7 @@ namespace screencapture
                             r.ConfidenceScoreResults = confScores;
                             r.CapturedText = allText;
                             r.PathToImage = path;
-                            //r.RecognizedEntities = nerResult;
+                            r.RecognizedEntities = finalNer;
 
 
                             Program._ControllerUx.SetConfidence(r);
