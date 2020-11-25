@@ -70,9 +70,11 @@ namespace screencapture
                 if (detectText)
                 {
                     Logger.Info("Before OCR {ScreenNr}", deviceCount);
+
+                    string ocrFinal = OcrHelperWindows.GetFullText(path);
                     //Do OCR
-                    List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
-                    ocrResults.AddRange(ocrText);
+                    /* List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
+                    ocrResults.AddRange(ocrText); */
                     Logger.Info("After OCR {ScreenNr}", deviceCount);
 
                     /* //TBD
@@ -101,20 +103,21 @@ namespace screencapture
 
                     if (generateTextDump)
                     {
-                        if (ocrText != null && ocrText.Count > 0)
-                        {
+                        //if (ocrText != null && ocrText.Count > 0)
+                        //{
                             Logger.Info("Before generate TextDump");
 
                             string filePath = @"C:\Users\gerhas\Documents\GitHub\hashtag\text\query.txt";
 
                             //string filePath = GetFileName(FileTypeForSerialization.RawText, capturedTime, deviceCount.ToString());
-                            StringWriter writeToMemory = new StringWriter();
+                            /* StringWriter writeToMemory = new StringWriter();
                             foreach (var aRes in ocrResults)
                             {
                                 writeToMemory.Write(CleanString(aRes.Content) + " ");
-                            }
+                            } */
 
-                            string allText = CleanString(writeToMemory.ToString());
+                            //string allText = CleanString(writeToMemory.ToString());
+                            string allText = CleanString(ocrFinal);
 
                             //skip beginning
                             if (allText.Length > 50)
@@ -159,7 +162,7 @@ namespace screencapture
                             {
                                 Logger.Trace(aScore.GetDebug());
                             }
-                        }
+                        //}
                     }
 
 
