@@ -151,7 +151,7 @@ namespace screencapture
                             }
 
 
-                            var confScores = LanguageModel.GetConfidenceFromServer();
+                            List<ConfidenceScore> confScores = new List<ConfidenceScore>(); //LanguageModel.GetConfidenceFromServer();
                             if (confScores.Count >0)
                             {
                                 c0 = confScores[0].GetDebug();
@@ -170,10 +170,10 @@ namespace screencapture
 
 
                             Program._ControllerUx.SetConfidence(r);
-                            foreach (var aScore in confScores)
-                            {
+                            //foreach (var aScore in confScores)
+                         /*    {
                                 Logger.Trace(aScore.GetDebug());
-                            }
+                            } */
                         //}
                     }
 

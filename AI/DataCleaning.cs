@@ -11,7 +11,7 @@ namespace screencapture
         public static bool IsHighConfidenceName(string name)
         {
             var subs = name.Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-            if (subs.Length > 1 && IsCommonFirstName(subs)) return true;
+            if (subs.Length == 2 && IsCommonFirstName(subs)) return true;
             return false;
 
         }

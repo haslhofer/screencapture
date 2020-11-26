@@ -19,6 +19,8 @@ namespace screencapture
         private ListBox _entities = new ListBox();
         private int _Counter = 1;
 
+        private List<string> _names = new List<string>();
+
         private AssessmentResult _AssessmentResult;
         public ControllerUx()
         {
@@ -35,6 +37,7 @@ namespace screencapture
             score0.ForeColor = Color.DarkOrange;
             score0.Font = new Font("Tahoma", 20, FontStyle.Bold);
             score0.Click += score0_click;
+            score0.Visible = false;
 
             score1.Text = "none";
 
@@ -45,13 +48,12 @@ namespace screencapture
 
             //Confidence
             conf.Location = new Point(0, 70);
+            conf.Visible = false;
 
             //Entities
-            _entities.Location = new Point(0, 100);
-            _entities.Size = new Size(400,800);
-            _entities.Items.Add("TestItem1");
-            _entities.Items.Add("TestItem2");
-
+            _entities.Location = new Point(0, 0);
+            _entities.Size = new Size(400, 800);
+            _entities.SelectedValueChanged += new EventHandler(ListBox1_SelectedValueChanged);
 
 
             this.Controls.Add(score0);
@@ -62,6 +64,16 @@ namespace screencapture
 
 
         }
+        private async void ListBox1_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (_entities.SelectedIndex != -1)
+            {
+                string entity = (string)(_entities.Items[_entities.SelectedIndex]);
+                await OneNoteCapture.AppendImage(_AssessmentResult.PathToImage, Configurator.GetPageIdFromHashTag(entity));
+                
+            }
+        }
+
 
         void score0_click(Object sender, EventArgs e)
         {
@@ -114,6 +126,17 @@ namespace screencapture
                 c1 = r.ConfidenceScoreResults[1].GetDebug();
             }
 
+            //Update List
+            foreach (var anItem in r.RecognizedEntities)
+            {
+                if (!_names.Contains(anItem.text))
+                {
+                    _names.Add(anItem.text);
+                }
+            }
+        
+
+
 
             if (this.InvokeRequired)
             {
@@ -122,9 +145,10 @@ namespace screencapture
                     score0.Text = c0;
                     score1.Text = c1;
                     conf.Text = confidenceText;
+
                     _entities.Items.Clear();
 
-                    var sorted = from x in r.RecognizedEntities orderby x.text select x.text;
+                    var sorted = from x in _names orderby x select x;
 
                     foreach (var aNer in sorted)
                     {
@@ -139,21 +163,21 @@ namespace screencapture
                 score0.Text = c0;
                 score1.Text = c1;
                 conf.Text = confidenceText;
+                
+
                 _entities.Items.Clear();
 
-                foreach (var aNer in r.RecognizedEntities)
-                {
-                    _entities.Items.Add(aNer.text);
-                }
+                    var sorted = from x in _names orderby x select x;
+
+                    foreach (var aNer in sorted)
+                    {
+                        _entities.Items.Add(aNer);
+                    }
 
             }
 
 
         }
-
-
-
-
 
         public void DeleteFloaters()
         {
