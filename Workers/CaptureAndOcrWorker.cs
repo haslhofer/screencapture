@@ -31,7 +31,8 @@ namespace screencapture
             bool detectText ,
             bool generateTextDump ,
             //bool reRenderText = false,
-            bool detectProcesses 
+            bool detectProcesses ,
+            ControllerUx ux
             )
         {
 
@@ -69,6 +70,9 @@ namespace screencapture
 
                 if (detectText)
                 {
+
+                    //var res = ux.TryOcr().Result;
+
                     Logger.Info("Before OCR {ScreenNr}", deviceCount);
 
                     string ocrFinal = OcrHelperWindows.GetFullText(path);
@@ -134,7 +138,7 @@ namespace screencapture
 
                             string c0 = string.Empty;
                             string c1 = string.Empty;
-
+/* 
                             Logger.Info("Before run language model");
                             
 
@@ -169,7 +173,7 @@ namespace screencapture
                             r.RecognizedEntities = finalNer;
 
 
-                            Program._ControllerUx.SetConfidence(r);
+                            Program._ControllerUx.SetConfidence(r); */
                             //foreach (var aScore in confScores)
                          /*    {
                                 Logger.Trace(aScore.GetDebug());

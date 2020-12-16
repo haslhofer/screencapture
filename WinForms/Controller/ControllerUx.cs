@@ -14,6 +14,7 @@ namespace screencapture
     {
         private List<FloaterUx> _Floaters = new List<FloaterUx>();
         private Button score0 = new Button();
+        private Button doOCR = new Button();
         private Button score1 = new Button();
         private Label conf = new Label();
         private ListBox _entities = new ListBox();
@@ -55,6 +56,10 @@ namespace screencapture
             _entities.Size = new Size(400, 800);
             _entities.SelectedValueChanged += new EventHandler(ListBox1_SelectedValueChanged);
 
+            doOCR.Text = "DoOcr";
+            doOCR.Click += doOcr_click;
+
+            this.Controls.Add(doOCR);
 
             this.Controls.Add(score0);
             this.Controls.Add(score1);
@@ -64,13 +69,35 @@ namespace screencapture
 
 
         }
+
+        public async Task<string> TryOcr()
+        {
+            string r = string.Empty; 
+            if (this.InvokeRequired)
+            {
+                InvokeUI(async() => 
+                {
+                  OcrHelperWindows.InitOCr();
+                  r = await OcrHelperWindows.GetFullText2(@"C:\data\temp2\capture_Image_637403612543211215_0.jpg");
+
+
+                });
+            }
+            else
+            {
+                r=String.Empty;
+            }
+
+            return r;
+
+        }
         private async void ListBox1_SelectedValueChanged(object sender, EventArgs e)
         {
             if (_entities.SelectedIndex != -1)
             {
                 string entity = (string)(_entities.Items[_entities.SelectedIndex]);
                 await OneNoteCapture.AppendImage(_AssessmentResult.PathToImage, Configurator.GetPageIdFromHashTag(entity));
-                
+
             }
         }
 
@@ -79,6 +106,12 @@ namespace screencapture
         {
             UpdateText(0);
         }
+        async void doOcr_click(Object sender, EventArgs e)
+        {
+            
+
+        }
+
 
         void score1_click(Object sender, EventArgs e)
         {
@@ -134,7 +167,7 @@ namespace screencapture
                     _names.Add(anItem.text);
                 }
             }
-        
+
 
 
 
@@ -163,16 +196,16 @@ namespace screencapture
                 score0.Text = c0;
                 score1.Text = c1;
                 conf.Text = confidenceText;
-                
+
 
                 _entities.Items.Clear();
 
-                    var sorted = from x in _names orderby x select x;
+                var sorted = from x in _names orderby x select x;
 
-                    foreach (var aNer in sorted)
-                    {
-                        _entities.Items.Add(aNer);
-                    }
+                foreach (var aNer in sorted)
+                {
+                    _entities.Items.Add(aNer);
+                }
 
             }
 

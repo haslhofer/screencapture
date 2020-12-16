@@ -91,7 +91,7 @@ namespace screencapture
             //Application.Run(_NoteForm);
             //Start workers
 
-            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses));
+            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses, _ControllerUx));
             myCaptureThread.Start();
 
             //Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
