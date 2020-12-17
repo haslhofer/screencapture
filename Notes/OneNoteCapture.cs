@@ -52,7 +52,7 @@ namespace screencapture
             var authProvider = new DeviceCodeAuthProvider(appId, scopes);
             
             // Request a token to sign in the user
-            _accessToken = authProvider.GetAccessToken().Result;
+            _accessToken = authProvider.GetAccessToken2().Result;
             _graphClient = new GraphServiceClient(authProvider);
 
         }

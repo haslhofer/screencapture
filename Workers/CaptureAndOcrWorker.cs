@@ -60,15 +60,19 @@ namespace screencapture
 
                 //Take Screenshot
                 Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+
+                
                 string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
-                img.Save(path, ImageFormat.Jpeg);
+                //img.Save(path, ImageFormat.Jpeg);
+
+                //ux.SetImage(img);
 
                 Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
 
                 aMonitorInfo.ImageFullPath = path;
                 Console.WriteLine("Captured at " + path);
 
-                if (detectText)
+                if (false)
                 {
 
                     //var res = ux.TryOcr().Result;
@@ -190,7 +194,7 @@ namespace screencapture
                     b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
                     */
                 }
-                deviceCount++;
+/*                 deviceCount++;
                 monitorInfos.Add(aMonitorInfo);
                 
 
@@ -213,7 +217,7 @@ namespace screencapture
                 //Serialize
                 string pathJson = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.FullOCR, capturedTime, string.Empty));
                 string jsonString = JsonSerializer.Serialize(s);
-                File.WriteAllText(pathJson, jsonString);
+                File.WriteAllText(pathJson, jsonString); */
 
                 if (loopforever)
                 {

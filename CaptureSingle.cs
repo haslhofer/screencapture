@@ -6,10 +6,14 @@ using System.Drawing.Imaging;
 
 
 
+
 namespace screencapture
 {
     public class ScreenCapture
     {
+
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public ScreenCapture()
         {
             
@@ -34,27 +38,34 @@ namespace screencapture
 
         public Image CaptureWindowFromDevice(string deviceName, int width, int height)
         {
-            IntPtr hdcSrc = GDI32.CreateDC(deviceName, null, null, IntPtr.Zero);
 
+            Logger.Info("Cap1");
+            IntPtr hdcSrc = GDI32.CreateDC(deviceName, null, null, IntPtr.Zero);
+            Logger.Info("Cap2");
             
             // create a device context we can copy to
             IntPtr hdcDest = GDI32.CreateCompatibleDC(hdcSrc);
+            Logger.Info("Cap3");
             // create a bitmap we can copy it to,
             // using GetDeviceCaps to get the width/height
             IntPtr hBitmap = GDI32.CreateCompatibleBitmap(hdcSrc,width,height);
+            Logger.Info("Cap4");
             // select the bitmap object
             IntPtr hOld = GDI32.SelectObject(hdcDest,hBitmap);
             // bitblt over
             GDI32.BitBlt(hdcDest,0,0,width,height,hdcSrc,0,0,GDI32.SRCCOPY);
+            Logger.Info("Cap5");
             // restore selection
             GDI32.SelectObject(hdcDest,hOld);
             // clean up
             GDI32.DeleteDC(hdcDest);
             GDI32.DeleteDC(hdcSrc);
             // get a .NET image object for it
+            Logger.Info("Cap6");
             Image img = Image.FromHbitmap(hBitmap);
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
+            Logger.Info("Cap7");
             return img;
         }
 
@@ -83,6 +94,7 @@ namespace screencapture
             User32.ReleaseDC(handle,hdcSrc);
             // get a .NET image object for it
             Image img = Image.FromHbitmap(hBitmap);
+           
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
             return img;

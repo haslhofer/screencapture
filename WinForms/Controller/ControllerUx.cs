@@ -12,6 +12,8 @@ namespace screencapture
 {
     public partial class ControllerUx : Form
     {
+        private PictureBox _pic = new PictureBox();
+
         private List<FloaterUx> _Floaters = new List<FloaterUx>();
         private Button score0 = new Button();
         private Button doOCR = new Button();
@@ -26,11 +28,18 @@ namespace screencapture
         public ControllerUx()
         {
 
+
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(300, 300);
             this.Opacity = 0.8;
             this.TopMost = true;
+            this.Resize += OnResize;
+            
+
+            _pic.Size = new Size(1600, 800);
+            _pic.SizeMode = PictureBoxSizeMode.Zoom;
+
 
             score0.Text = "none";
             score0.Width = 300;
@@ -59,33 +68,61 @@ namespace screencapture
             doOCR.Text = "DoOcr";
             doOCR.Click += doOcr_click;
 
-            this.Controls.Add(doOCR);
+            this.Controls.Add(_pic);
 
-            this.Controls.Add(score0);
-            this.Controls.Add(score1);
-            this.Controls.Add(conf);
-            this.Controls.Add(_entities);
+
+            //this.Controls.Add(doOCR);
+
+            //this.Controls.Add(score0);
+            //this.Controls.Add(score1);
+            //this.Controls.Add(conf);
+            //this.Controls.Add(_entities);
+
 
 
 
         }
 
-        public async Task<string> TryOcr()
+        protected void OnResize (object sender, System.EventArgs e)
         {
-            string r = string.Empty; 
+            this._pic.Size = this.Size;
+
+        }
+
+        
+        
+        public void SetImage(Image img)
+        {
             if (this.InvokeRequired)
             {
-                InvokeUI(async() => 
+                InvokeUI(() =>
                 {
-                  OcrHelperWindows.InitOCr();
-                  r = await OcrHelperWindows.GetFullText2(@"C:\data\temp2\capture_Image_637403612543211215_0.jpg");
+                    _pic.Image = img;
+                });
+            }
+            else
+            {
+                _pic.Image = img;
+            }
+
+        }
+
+        public async Task<string> TryOcr()
+        {
+            string r = string.Empty;
+            if (this.InvokeRequired)
+            {
+                InvokeUI(async () =>
+                {
+                    OcrHelperWindows.InitOCr();
+                    r = await OcrHelperWindows.GetFullText2(@"C:\data\temp2\capture_Image_637403612543211215_0.jpg");
 
 
                 });
             }
             else
             {
-                r=String.Empty;
+                r = String.Empty;
             }
 
             return r;
@@ -108,7 +145,7 @@ namespace screencapture
         }
         async void doOcr_click(Object sender, EventArgs e)
         {
-            
+
 
         }
 
