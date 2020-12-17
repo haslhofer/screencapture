@@ -28,7 +28,8 @@ namespace screencapture
         //public static NoteUxManager _NoteUxManager; 
         //public static OverlayUx _OverlayUx;
 
-        public static ControllerUx _ControllerUx;
+        
+        public static OaDisplayUx _OaDisplayUx;
 
 
 
@@ -78,8 +79,8 @@ namespace screencapture
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            _ControllerUx = new ControllerUx();
-            _ControllerUx.Show();
+            _OaDisplayUx = new OaDisplayUx();
+            _OaDisplayUx.Show();
             //_ControllerUx.Hide();
             
             //_NoteUxManager= new NoteUxManager();
@@ -91,7 +92,7 @@ namespace screencapture
             //Application.Run(_NoteForm);
             //Start workers
 
-            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses, _ControllerUx));
+            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses, _OaDisplayUx));
             myCaptureThread.Start();
 
             //Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());

@@ -32,7 +32,7 @@ namespace screencapture
             bool generateTextDump ,
             //bool reRenderText = false,
             bool detectProcesses ,
-            ControllerUx ux
+            OaDisplayUx ux
             )
         {
 
@@ -66,6 +66,7 @@ namespace screencapture
                 //img.Save(path, ImageFormat.Jpeg);
 
                 ux.SetImage(img);
+
 
                 Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
 
