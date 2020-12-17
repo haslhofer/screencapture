@@ -31,21 +31,14 @@ namespace screencapture
         public static void Init()
         {
 
+            string appId = "f6ca8e54-ef4b-4948-8274-2f2a10d7316f";
+            string scopesString = "User.Read;MailboxSettings.Read;Calendars.ReadWrite;Notes.Create;Notes.Read;Notes.ReadWrite";
+
             //Ensure app secrets are properly set
             //See tutorial https://docs.microsoft.com/en-us/graph/tutorials/dotnet-core?tutorial-step=3
             //
             //dotnet user-secrets set appId "YOUR_APP_ID_HERE"
-            
-            var appConfig = LoadAppSettings();
-
-            if (appConfig == null)
-            {
-                Logger.Log(NLog.LogLevel.Fatal, "Missing or invalid appsettings.json...exiting");
-                throw new System.Exception("Missing or invalid appsettings.json");
-            }
-
-            var appId = appConfig["appId"];
-            string scopesString = "User.Read;MailboxSettings.Read;Calendars.ReadWrite;Notes.Create;Notes.Read;Notes.ReadWrite";
+                        
             var scopes = scopesString.Split(';');
 
             // Initialize the auth provider with values from appsettings.json
@@ -113,21 +106,6 @@ namespace screencapture
 
             return response.StatusCode.ToString();
 
-        }
-
-        static IConfigurationRoot LoadAppSettings()
-        {
-            var appConfig = new ConfigurationBuilder()
-                .AddUserSecrets<Program>()
-                .Build();
-
-            // Check for required settings
-            if (string.IsNullOrEmpty(appConfig["appId"]) )
-            {
-                return null;
-            }
-
-            return appConfig;
         }
     }
 }

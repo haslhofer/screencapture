@@ -65,7 +65,7 @@ namespace screencapture
                 string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
                 //img.Save(path, ImageFormat.Jpeg);
 
-                //ux.SetImage(img);
+                ux.SetImage(img);
 
                 Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
 
