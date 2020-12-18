@@ -17,8 +17,8 @@ namespace screencapture
 {
     public class OneNoteDescriptor
     {
-        public string PageId {get;set;}
-        public string PageTitle {get;set;}
+        public string PageId { get; set; }
+        public string PageTitle { get; set; }
 
     }
 
@@ -27,7 +27,7 @@ namespace screencapture
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static GraphServiceClient _graphClient;
         private static string _accessToken;
-        
+
         public static void Init()
         {
 
@@ -38,26 +38,26 @@ namespace screencapture
             //See tutorial https://docs.microsoft.com/en-us/graph/tutorials/dotnet-core?tutorial-step=3
             //
             //dotnet user-secrets set appId "YOUR_APP_ID_HERE"
-                        
+
             var scopes = scopesString.Split(';');
 
             // Initialize the auth provider with values from appsettings.json
             var authProvider = new DeviceCodeAuthProvider(appId, scopes);
-            
+
             // Request a token to sign in the user
             _accessToken = authProvider.GetAccessToken2().Result;
             _graphClient = new GraphServiceClient(authProvider);
 
         }
-     
+
 
         public static async Task<List<OneNoteDescriptor>> GetAllPages()
         {
             List<OneNoteDescriptor> res = new List<OneNoteDescriptor>();
-            var pages =  await _graphClient.Me.Onenote.Pages.Request().GetAsync(); 
+            var pages = await _graphClient.Me.Onenote.Pages.Request().GetAsync();
             foreach (var aPage in pages)
             {
-                OneNoteDescriptor d= new OneNoteDescriptor();
+                OneNoteDescriptor d = new OneNoteDescriptor();
                 d.PageId = aPage.Id;
                 d.PageTitle = aPage.Title;
                 res.Add(d);
@@ -65,22 +65,26 @@ namespace screencapture
             return res;
         }
 
-        public static async Task<string> AppendImage(string pathToImage, string pageId)
+        public static async Task<string> AppendImage(System.Drawing.Image image, string pageId)
         {
+            MemoryStream m = new MemoryStream();
+            image.Save(m, ImageFormat.Jpeg);
+            m.Flush();
+            int width = image.Width;
+            int height = image.Height;
+            byte[] imgJpg = m.ToArray();
+            m.Close();
+            return await AppendImage(imgJpg, width, height, pageId);   
+        }
 
-            //byte[] bytes = System.IO.File.ReadAllBytes(@"C:\data\temp2\capture_Image_637403620958932705_0.jpg"); 
-            byte[] bytes = System.IO.File.ReadAllBytes(pathToImage); 
-            MemoryStream m = new MemoryStream(bytes);
-            System.Drawing.Image myImg = System.Drawing.Image.FromStream(m);
-            int width = myImg.Width;
-            int height = myImg.Height;
-            
-
+        private static async Task<string> AppendImage(byte[] jpeg, int width, int height, string pageId)
+        {
+        
             //Get Base64 encoding of string
-            string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);  //attempt5
+            string base64String = Convert.ToBase64String(jpeg, 0, jpeg.Length);  
             string imageDataURL = string.Format("data:image/jpeg;base64,{0}", base64String);  //attempt6
 
-            string imgSrc = "'<img src=" + imageDataURL  + @" width="""+ width +@""" height=""" +height +@"""/>'";
+            string imgSrc = "'<img src=" + imageDataURL + @" width=""" + width + @""" height=""" + height + @"""/>'";
 
             string requestUrl = $"https://graph.microsoft.com/v1.0/me/onenote/pages/{pageId}/content";
             string body = @"[{
@@ -105,6 +109,20 @@ namespace screencapture
             HttpResponseMessage response = await client.SendAsync(req);
 
             return response.StatusCode.ToString();
+
+        }
+
+        public static async Task<string> AppendImage(string pathToImage, string pageId)
+        {
+
+            //byte[] bytes = System.IO.File.ReadAllBytes(@"C:\data\temp2\capture_Image_637403620958932705_0.jpg"); 
+            byte[] bytes = System.IO.File.ReadAllBytes(pathToImage);
+            MemoryStream m = new MemoryStream(bytes);
+            System.Drawing.Image myImg = System.Drawing.Image.FromStream(m);
+            int width = myImg.Width;
+            int height = myImg.Height;
+
+            return await AppendImage(bytes, width, height, pageId);
 
         }
     }

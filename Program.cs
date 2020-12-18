@@ -50,8 +50,7 @@ namespace screencapture
             ConfigureLogging();
             Logger.Info("Startup");
 
-            FillTestData();
-
+            
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
@@ -62,7 +61,7 @@ namespace screencapture
 
             //Init which pages we'll use
             Configurator.Init();
-            Configurator.WriteConfig();
+            
 
 
             //Determine the screen to watch
@@ -119,13 +118,6 @@ namespace screencapture
             NLog.LogManager.Configuration = config;
         }
 
-        private static void FillTestData()
-        {
-            NoteReference r1 = new NoteReference();
-            r1.Anchor = "samnerkar";
-            r1.Note = "Ask about Satya AI365 slide deck";
-            _NoteReferences.Add(r1);
-        }
 
         private static void TestPython()
         {

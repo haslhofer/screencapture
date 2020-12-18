@@ -13,6 +13,7 @@ namespace screencapture
 {
     public partial class OaDisplayUx : Form
     {
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -127,9 +128,20 @@ namespace screencapture
         private System.Windows.Forms.PictureBox screenCapture;
         private System.Windows.Forms.TextBox statusTextBox;
 
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private void CaptureClick_EventHandler(Object sender,EventArgs e)
+
+        private async void CaptureClick_EventHandler(Object sender,EventArgs e)
         {
+
+            Logger.Info("Before write captured screenshot to OneNote");
+
+            Image imageToWrite = screenCapture.Image;
+            string pageId = Configurator.DestinationOneNote.PageId;
+            string res = await OneNoteCapture.AppendImage(imageToWrite, pageId);
+            Logger.Info("After write captured screenshot to OneNote");
+
+            MessageBox.Show(res, "Captured page", MessageBoxButtons.OK);
 
         }
     }
