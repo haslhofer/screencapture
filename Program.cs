@@ -22,14 +22,15 @@ namespace screencapture
 
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        
+
         public static MonitorHelper.DisplayInfo _MonitorToWatch;
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
-        
-        
+
+
         public static OaDisplayUx _OaDisplayUx;
         public static List<WorkItem> ActionQueue = new List<WorkItem>();
+        public static List<IOAWorker> WorkerList = new List<IOAWorker>();
 
 
 
@@ -44,7 +45,7 @@ namespace screencapture
             ConfigureLogging();
             Logger.Info("Startup");
             Logger.Info("Monitor to use:" + MonitorIndex.ToString());
-    
+
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
@@ -54,14 +55,14 @@ namespace screencapture
 
             //Init which pages we'll use
             Configurator.Init();
-        
+
             //Determine the screen to watch
-               
+
             MonitorHelper h = new MonitorHelper();
             var displays = h.GetDisplays();
             Logger.Info("App assumes there are two monitors. # Displays detected:" + displays.Count.ToString());
-            
-            _MonitorToWatch= displays[MonitorIndex];
+
+            _MonitorToWatch = displays[MonitorIndex];
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
@@ -70,19 +71,30 @@ namespace screencapture
             _OaDisplayUx = new OaDisplayUx();
             Logger.Info("Before Show Ux");
             _OaDisplayUx.Show();
-            
+
             //Set up queue to deal with incoming events
             lock (ActionQueue)
             {
-                ActionQueue.Add(WorkItem.GetGenericWorkItem(WorkItemType.Kickoff)); 
+                ActionQueue.Add(WorkItem.GetGenericWorkItem(WorkItemType.Kickoff));
             }
+
+            TakeScreenshotWorker screenShotworker = new TakeScreenshotWorker();
+            WorkerList.Add(screenShotworker);
 
             Task.Run(() =>
             {
-                TakeScreenshotWorker.TakeScreenShotsLoop();
-
+                while (true)
+                {
+                    QueueCleaner.CleanQueue();
+                    Thread.Sleep(100);
+                }
             });
-                
+
+            Task.Run(() =>
+            {
+                screenShotworker.TakeScreenShotsLoop();
+            });
+
 
 
             //Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(_OaDisplayUx));

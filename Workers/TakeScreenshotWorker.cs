@@ -11,13 +11,14 @@ using System.IO;
 
 namespace screencapture
 {
-    public class TakeScreenshotWorker
+    public class TakeScreenshotWorker : IOAWorker
     {
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static long _lastWorkItemProcessed = 0;
-        private static void TakeScreenShot(WorkItem triggeredWorkItem)
+        private long _lastWorkItemProcessed = 0;
+        private long _highWaterMarkOkToTrim = 0;
+        private void TakeScreenShot(WorkItem triggeredWorkItem)
         {
             Console.WriteLine("Triggered take screen shot");
 
@@ -34,7 +35,12 @@ namespace screencapture
                 Program.ActionQueue.Add(w);
             }
         }
-        public static void TakeScreenShotsLoop()
+
+        long IOAWorker.WaterMarkOkToTrim()
+        {
+            return _highWaterMarkOkToTrim;
+        }
+        public void TakeScreenShotsLoop()
         {
             try
             {
@@ -43,10 +49,14 @@ namespace screencapture
                 {
 
                     WorkItem workItemToExecute = new WorkItem();
+                    long highWaterMarkOkToTrim = _highWaterMarkOkToTrim;
+
                     lock (Program.ActionQueue)
                     {
                         foreach (var item in Program.ActionQueue)
                         {
+                            if (item.CreatedTimeTick > highWaterMarkOkToTrim) highWaterMarkOkToTrim = item.CreatedTimeTick;
+
                             //Screenshot triggers on Kickoff, and Screenshotresults being available
                             if (item.TypeOfWorkItem == WorkItemType.Kickoff || item.TypeOfWorkItem == WorkItemType.ScreenShotTaken)
                             {
@@ -56,6 +66,8 @@ namespace screencapture
                                 }
                             }
                         }
+
+
                     }
 
                     //Process if possible
@@ -64,7 +76,12 @@ namespace screencapture
                         TakeScreenShot(workItemToExecute);
                         //Set the new baseline for picking up the next work item
                         _lastWorkItemProcessed = workItemToExecute.CreatedTimeTick;
+
                     }
+
+                    //The queue trimmer needs to know what the newest item is from where all older items can be removed because all processors have seen them
+                    _highWaterMarkOkToTrim = highWaterMarkOkToTrim;
+
                     System.Threading.Thread.Sleep(10);
 
                 }
