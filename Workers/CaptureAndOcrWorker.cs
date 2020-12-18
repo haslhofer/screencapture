@@ -30,7 +30,7 @@ namespace screencapture
             )
         {
 
-            ScreenCapture sc = new ScreenCapture();
+            
 
             do
             {
@@ -53,7 +53,7 @@ namespace screencapture
                 Logger.Info("Before capture Screenshot {ScreenNr}", deviceCount);
 
                 //Take Screenshot
-                Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+                Image img = ScreenCapture.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
 
                 //string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
                 //img.Save(path, ImageFormat.Jpeg);

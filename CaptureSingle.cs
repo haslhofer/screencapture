@@ -13,16 +13,12 @@ namespace screencapture
     {
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-
-        public ScreenCapture()
-        {
-            
-        }
+   
         /// <summary>
         /// Creates an Image object containing a screen shot of the entire desktop
         /// </summary>
         /// <returns></returns>
-        public Image CaptureScreen()
+        public static Image CaptureScreen()
         {
             return CaptureWindow( User32.GetDesktopWindow() );
         }
@@ -36,7 +32,7 @@ namespace screencapture
         // static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
 
 
-        public Image CaptureWindowFromDevice(string deviceName, int width, int height)
+        public static Image CaptureWindowFromDevice(string deviceName, int width, int height)
         {
 
             
@@ -63,7 +59,7 @@ namespace screencapture
             return img;
         }
 
-        public Image CaptureWindow(IntPtr handle)
+        public static Image CaptureWindow(IntPtr handle)
         {
             // get te hDC of the target window
             IntPtr hdcSrc = User32.GetWindowDC(handle);
@@ -99,7 +95,7 @@ namespace screencapture
         /// <param name="handle"></param>
         /// <param name="filename"></param>
         /// <param name="format"></param>
-        public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
+        public static void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {
             Image img = CaptureWindow(handle);
             img.Save(filename,format);
@@ -109,14 +105,10 @@ namespace screencapture
         /// </summary>
         /// <param name="filename"></param>
         /// <param name="format"></param>
-        public void CaptureScreenToFile(string filename, ImageFormat format)
+        public static void CaptureScreenToFile(string filename, ImageFormat format)
         {
             Image img = CaptureScreen();
             img.Save(filename,format);
         }
-     
-       
-       
     }
-    
 }

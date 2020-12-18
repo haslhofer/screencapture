@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Drawing.Imaging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
-using System.Collections.Concurrent;
 using System.Windows.Forms;
 using NLog;
 
@@ -25,11 +26,10 @@ namespace screencapture
         public static MonitorHelper.DisplayInfo _MonitorToWatch;
         public static ConcurrentQueue<ScreenState> _CaptureItems = new ConcurrentQueue<ScreenState>();
         public static List<NoteReference> _NoteReferences = new List<NoteReference>();
-        //public static NoteUxManager _NoteUxManager; 
-        //public static OverlayUx _OverlayUx;
-
+        
         
         public static OaDisplayUx _OaDisplayUx;
+        public static List<WorkItem> ActionQueue = new List<WorkItem>();
 
 
 
@@ -72,11 +72,21 @@ namespace screencapture
             _OaDisplayUx.Show();
             
             //Set up queue to deal with incoming events
-            
+            lock (ActionQueue)
+            {
+                ActionQueue.Add(WorkItem.GetGenericWorkItem(WorkItemType.Kickoff)); 
+            }
+
+            Task.Run(() =>
+            {
+                TakeScreenshotWorker.TakeScreenShotsLoop();
+
+            });
+                
 
 
-            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(_OaDisplayUx));
-            myCaptureThread.Start();
+            //Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(_OaDisplayUx));
+            //myCaptureThread.Start();
 
             //Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());
             //myShowNote.Start();
