@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows;
 
 namespace screencapture
 {
@@ -68,10 +69,11 @@ namespace screencapture
         {
             this.buttonCaptureScreen = new System.Windows.Forms.Button();
             this.screenCapture = new System.Windows.Forms.PictureBox();
+            this.statusTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.screenCapture)).BeginInit();
             this.SuspendLayout();
             // 
-            // captureScreen
+            // buttonCaptureScreen
             // 
             this.buttonCaptureScreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCaptureScreen.Location = new System.Drawing.Point(1043, 611);
@@ -80,8 +82,9 @@ namespace screencapture
             this.buttonCaptureScreen.TabIndex = 0;
             this.buttonCaptureScreen.Text = "Capture Screen";
             this.buttonCaptureScreen.UseVisualStyleBackColor = true;
+            this.buttonCaptureScreen.Click += CaptureClick_EventHandler;
             // 
-            // screenCapture
+            // screenCapture 
             // 
             this.screenCapture.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
@@ -93,11 +96,22 @@ namespace screencapture
             this.screenCapture.TabStop = false;
             this.screenCapture.SizeMode = PictureBoxSizeMode.Zoom;
             // 
+            // statusTextBox
+            // 
+            this.statusTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusTextBox.Enabled = false;
+            this.statusTextBox.Location = new System.Drawing.Point(12, 611);
+            this.statusTextBox.Name = "statusTextBox";
+            this.statusTextBox.Size = new System.Drawing.Size(969, 26);
+            this.statusTextBox.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 670);
+            this.Controls.Add(this.statusTextBox);
             this.Controls.Add(this.screenCapture);
             this.Controls.Add(this.buttonCaptureScreen);
             this.Name = "Observational Assistance";
@@ -111,5 +125,12 @@ namespace screencapture
 
         private System.Windows.Forms.Button buttonCaptureScreen;
         private System.Windows.Forms.PictureBox screenCapture;
+        private System.Windows.Forms.TextBox statusTextBox;
+
+
+        private void CaptureClick_EventHandler(Object sender,EventArgs e)
+        {
+
+        }
     }
 }

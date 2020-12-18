@@ -46,10 +46,6 @@ namespace screencapture
             )
         {
 
-            //LanguageModel.GetConfidenceFromServer();
-            //TestPython();
-            //return 0;
-
 
             ConfigureLogging();
             Logger.Info("Startup");
