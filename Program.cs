@@ -35,59 +35,43 @@ namespace screencapture
 
         [STAThread]
         static int Main(
-            string directory = "",
-            bool loopforever = true,
-            bool detectText = true,
-            bool generateTextDump = true,
-            //bool reRenderText = false,
-            bool detectProcesses = false
-
-
+            int MonitorIndex = 1
             )
         {
 
 
+
             ConfigureLogging();
             Logger.Info("Startup");
-
-            
+            Logger.Info("Monitor to use:" + MonitorIndex.ToString());
+    
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
-            if (directory == String.Empty) { directory = @"c:\data\temp2\"; }
-
-            //Init where to store the images
+            //Authenticate with MS Graph
+            Logger.Info("Preparing for OneNoteAuthentication");
             OneNoteCapture.Init();
 
             //Init which pages we'll use
             Configurator.Init();
-            
-
-
+        
             //Determine the screen to watch
                
             MonitorHelper h = new MonitorHelper();
             var displays = h.GetDisplays();
-            _MonitorToWatch= displays[1];
+            Logger.Info("App assumes there are two monitors. # Displays detected:" + displays.Count.ToString());
+            
+            _MonitorToWatch= displays[MonitorIndex];
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             _OaDisplayUx = new OaDisplayUx();
+            Logger.Info("Before Show Ux");
             _OaDisplayUx.Show();
-            //_ControllerUx.Hide();
             
-            //_NoteUxManager= new NoteUxManager();
-
-            //_OverlayUx = new OverlayUx(_MonitorToWatch.MonitorArea.Top,_MonitorToWatch.MonitorArea.Left,_MonitorToWatch.MonitorArea.Bottom, _MonitorToWatch.MonitorArea.Right);
-            //_OverlayUx.Show();
-            //_OverlayUx.HideOverlay();
-
-            //Application.Run(_NoteForm);
-            //Start workers
-
-            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(directory, loopforever, detectText, generateTextDump, detectProcesses, _OaDisplayUx));
+            Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(_OaDisplayUx));
             myCaptureThread.Start();
 
             //Thread myShowNote = new Thread(() => ShowNoteWorker.ShowNotes());

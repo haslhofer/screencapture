@@ -26,12 +26,6 @@ namespace screencapture
         private static int sleepDefaultMS = 1;
 
         public static void CaptureAndWrite(
-            string directory ,
-            bool loopforever ,
-            bool detectText ,
-            bool generateTextDump ,
-            //bool reRenderText = false,
-            bool detectProcesses ,
             OaDisplayUx ux
             )
         {
@@ -61,8 +55,7 @@ namespace screencapture
                 //Take Screenshot
                 Image img = sc.CaptureWindowFromDevice(deviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
 
-                
-                string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
+                //string path = System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString()));
                 //img.Save(path, ImageFormat.Jpeg);
 
                 ux.SetImage(img);
@@ -70,21 +63,21 @@ namespace screencapture
 
                 Logger.Info("After capture Screenshot {ScreenNr}", deviceCount);
 
-                aMonitorInfo.ImageFullPath = path;
-                Console.WriteLine("Captured at " + path);
+                //aMonitorInfo.ImageFullPath = path;
+                //Console.WriteLine("Captured at " + path);
 
-                if (false)
-                {
+                //if (false)
+                //{
 
                     //var res = ux.TryOcr().Result;
 
-                    Logger.Info("Before OCR {ScreenNr}", deviceCount);
+                    //Logger.Info("Before OCR {ScreenNr}", deviceCount);
 
-                    string ocrFinal = OcrHelperWindows.GetFullText(path);
+                    //string ocrFinal = OcrHelperWindows.GetFullText(path);
                     //Do OCR
                     /* List<ScreenText> ocrText = OcrHelper.GetScreenTexts(path, deviceCount);
                     ocrResults.AddRange(ocrText); */
-                    Logger.Info("After OCR {ScreenNr}", deviceCount);
+                    //Logger.Info("After OCR {ScreenNr}", deviceCount);
 
                     /* //TBD
                     {
@@ -110,7 +103,7 @@ namespace screencapture
                     //bmp.Save(System.IO.Path.Combine(directory, GetFileName(FileTypeForSerialization.Jpeg, capturedTime, deviceCount.ToString() + "debug")));
                     //
 
-                    if (generateTextDump)
+                    /* if (generateTextDump)
                     {
                         //if (ocrText != null && ocrText.Count > 0)
                         //{
@@ -126,7 +119,7 @@ namespace screencapture
                             } */
 
                             //string allText = CleanString(writeToMemory.ToString());
-                            string allText = CleanString(ocrFinal);
+                            //string allText = CleanString(ocrFinal);
 
                             //skip beginning
                            /*  if (allText.Length > 50)
@@ -134,15 +127,15 @@ namespace screencapture
                                 allText = allText.Substring(50);
                             }
  */
-                            StreamWriter writeToDisc = new StreamWriter(filePath);
-                            writeToDisc.Write(allText);
-                            writeToDisc.Flush();
-                            writeToDisc.Close();
+                            // StreamWriter writeToDisc = new StreamWriter(filePath);
+                            // writeToDisc.Write(allText);
+                            // writeToDisc.Flush();
+                            // writeToDisc.Close();
 
-                            Logger.Info("After generate TextDump");
+                            // Logger.Info("After generate TextDump");
 
-                            string c0 = string.Empty;
-                            string c1 = string.Empty;
+                            // string c0 = string.Empty;
+                            // string c1 = string.Empty;
 /* 
                             Logger.Info("Before run language model");
                             
@@ -184,8 +177,8 @@ namespace screencapture
                                 Logger.Trace(aScore.GetDebug());
                             } */
                         //}
-                    }
-
+                    //}
+ //*/
 
 
                     /*
@@ -194,7 +187,7 @@ namespace screencapture
                     RenderImage.RenderBitmapFromTextSnippets(b, ocrText);
                     b.Save(@"c:\data\tes1.jpg", ImageFormat.Jpeg);
                     */
-                }
+                //}
 /*                 deviceCount++;
                 monitorInfos.Add(aMonitorInfo);
                 
@@ -220,12 +213,11 @@ namespace screencapture
                 string jsonString = JsonSerializer.Serialize(s);
                 File.WriteAllText(pathJson, jsonString); */
 
-                if (loopforever)
-                {
-                    System.Threading.Thread.Sleep(sleepDefaultMS);
-                }
+                
+                System.Threading.Thread.Sleep(sleepDefaultMS);
+                
             }
-            while (loopforever);
+            while (true);
 
 
         }
