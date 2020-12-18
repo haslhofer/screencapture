@@ -1,4 +1,4 @@
-using System;
+/* using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections;
@@ -44,4 +44,4 @@ namespace screencapture
             }     
         }
     }
-}
+} */

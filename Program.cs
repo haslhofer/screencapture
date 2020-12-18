@@ -71,6 +71,10 @@ namespace screencapture
             Logger.Info("Before Show Ux");
             _OaDisplayUx.Show();
             
+            //Set up queue to deal with incoming events
+            
+
+
             Thread myCaptureThread = new Thread(() => CaptureAndWorker.CaptureAndWrite(_OaDisplayUx));
             myCaptureThread.Start();
 

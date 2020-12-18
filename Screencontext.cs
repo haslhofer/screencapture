@@ -36,13 +36,13 @@ namespace screencapture
                 this.Bottom = r.bottom;
             }
 
-            public ScreenRectangle(Tesseract.Rect r)
+            /* public ScreenRectangle(Tesseract.Rect r)
             {
                 this.Top = r.Y1;
                 this.Left = r.X1;
                 this.Bottom = r.Y2;
                 this.Right = r.X2;
-            }
+            } */
             public ScreenRectangle(MonitorHelper.RectStruct  r)
             {
                 this.Left = r.Left;
