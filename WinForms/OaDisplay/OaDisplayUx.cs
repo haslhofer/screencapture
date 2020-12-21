@@ -24,27 +24,6 @@ namespace screencapture
             InitializeComponent();
         }
 
-        public void SetImage(Image img)
-        {
-            if (this.InvokeRequired)
-            {
-                InvokeUI(() =>
-                {
-                    screenCapture.Image = img;
-                });
-            }
-            else
-            {
-                screenCapture.Image = img;
-            }
-
-        }
-
-        private void InvokeUI(Action a)
-        {
-            this.BeginInvoke(new MethodInvoker(a));
-        }
-
 
 
         /// <summary>
@@ -103,13 +82,14 @@ namespace screencapture
             // 
             // statusTextBox
             // 
-            this.statusTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.statusTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.statusTextBox.Enabled = false;
             this.statusTextBox.Location = new System.Drawing.Point(12, 611);
             this.statusTextBox.Name = "statusTextBox";
             this.statusTextBox.Size = new System.Drawing.Size(969, 26);
             this.statusTextBox.TabIndex = 3;
+
             // spoolForward
             // 
             this.spoolForward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -120,11 +100,12 @@ namespace screencapture
             this.spoolForward.Text = "▶️";
             this.spoolForward.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.spoolForward.UseVisualStyleBackColor = true;
+            this.spoolForward.Click += SpoolForwardClick_EventHandler;
             // 
             // spoolBack
             // 
             this.spoolBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            
+
             this.spoolBack.Location = new System.Drawing.Point(994, 611);
             this.spoolBack.Name = "spoolBack";
             this.spoolBack.Size = new System.Drawing.Size(37, 47);
@@ -132,6 +113,7 @@ namespace screencapture
             this.spoolBack.Text = "◀️";
             this.spoolBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.spoolBack.UseVisualStyleBackColor = true;
+            this.spoolBack.Click += SpoolBackClick_EventHandler;
             // 
             // resumeMirror
             // 
@@ -143,13 +125,14 @@ namespace screencapture
             this.resumeMirror.Text = "▶️▶️";
             this.resumeMirror.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.resumeMirror.UseVisualStyleBackColor = true;
+            this.resumeMirror.Click += ResumeMirrorClick_EventHandler;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 670);
-             this.Controls.Add(this.resumeMirror);
+            this.Controls.Add(this.resumeMirror);
             this.Controls.Add(this.spoolBack);
             this.Controls.Add(this.spoolForward);
             this.Controls.Add(this.statusTextBox);
@@ -167,15 +150,19 @@ namespace screencapture
         private System.Windows.Forms.Button buttonCaptureScreen;
         private System.Windows.Forms.PictureBox screenCapture;
         private System.Windows.Forms.TextBox statusTextBox;
-        
+
         private System.Windows.Forms.Button spoolForward;
         private System.Windows.Forms.Button spoolBack;
         private System.Windows.Forms.Button resumeMirror;
 
+        private long _viewToken = 0;
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
 
-        private async void CaptureClick_EventHandler(Object sender,EventArgs e)
+
+
+        private async void CaptureClick_EventHandler(Object sender, EventArgs e)
         {
 
             Logger.Info("Before write captured screenshot to OneNote");
@@ -188,5 +175,79 @@ namespace screencapture
             MessageBox.Show(res, "Captured page", MessageBoxButtons.OK);
 
         }
+
+        private void SetStatusFromToken()
+        {
+            if (_viewToken == 0)
+            {
+                this.statusTextBox.Text = "";
+            }
+            else
+            {
+                DateTime d = new DateTime(_viewToken);
+                this.statusTextBox.Text = d.ToLongTimeString();
+            }
+        }
+        private void EnsureRetrieve()
+        {
+            if (Program.CacheWorker.GetCacheMode() == ImageCacheWorker.CacheMode.Capture)
+            {
+                _viewToken = Program.CacheWorker.StartRetrieve();
+            }
+        }
+        private void SpoolBackClick_EventHandler(Object sender, EventArgs e)
+        {
+            EnsureRetrieve();
+            var payload = Program.CacheWorker.GetPreviousFromToken(_viewToken);
+            if (payload != null)
+            {
+                screenCapture.Image = payload.Item1;
+                _viewToken = payload.Item2;
+            }
+            SetStatusFromToken();
+        }
+        private void SpoolForwardClick_EventHandler(Object sender, EventArgs e)
+        {
+            EnsureRetrieve();
+            var payload = Program.CacheWorker.GetNextFromToken(_viewToken);
+            if (payload != null)
+            {
+                screenCapture.Image = payload.Item1;
+                _viewToken = payload.Item2;
+            }
+            SetStatusFromToken();
+        }
+        private void ResumeMirrorClick_EventHandler(Object sender, EventArgs e)
+        {
+            _viewToken = 0;
+            Program.CacheWorker.ResumeCache();
+            SetStatusFromToken();
+        }
+
+        public void SetImage(Image img)
+        {
+            if (Program.CacheWorker.GetCacheMode() == ImageCacheWorker.CacheMode.Capture)
+            {
+                if (this.InvokeRequired)
+                {
+                    InvokeUI(() =>
+                    {
+                        screenCapture.Image = img;
+                    });
+                }
+                else
+                {
+                    screenCapture.Image = img;
+                }
+            }
+
+        }
+
+        private void InvokeUI(Action a)
+        {
+            this.BeginInvoke(new MethodInvoker(a));
+        }
+
+
     }
 }

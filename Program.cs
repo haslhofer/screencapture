@@ -32,6 +32,8 @@ namespace screencapture
         public static List<WorkItem> ActionQueue = new List<WorkItem>();
         public static List<GenericWorker> WorkerList = new List<GenericWorker>();
 
+        public static ImageCacheWorker CacheWorker;
+
 
 
         [STAThread]
@@ -81,6 +83,8 @@ namespace screencapture
             ScreenshotWorker screenShotworker = new ScreenshotWorker();
             WorkerList.Add(screenShotworker);
             ImageCacheWorker cacheWorker = new ImageCacheWorker();
+            CacheWorker = cacheWorker;
+            
             WorkerList.Add(cacheWorker);
 
             foreach (var worker in WorkerList)
