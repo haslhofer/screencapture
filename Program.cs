@@ -80,6 +80,18 @@ namespace screencapture
 
             ScreenshotWorker screenShotworker = new ScreenshotWorker();
             WorkerList.Add(screenShotworker);
+            ImageCacheWorker cacheWorker = new ImageCacheWorker();
+            WorkerList.Add(cacheWorker);
+
+            foreach (var worker in WorkerList)
+            {
+                Task.Run(() =>
+                {
+                    worker.WorkerLoop();
+                });
+
+            }
+
 
             Task.Run(() =>
             {
@@ -90,10 +102,7 @@ namespace screencapture
                 }
             });
 
-            Task.Run(() =>
-            {
-                screenShotworker.WorkerLoop();
-            });
+            
 
 
 

@@ -22,7 +22,7 @@ namespace screencapture
         
         public override void DoWork(WorkItem triggeredWorkItem)
         {
-            Console.WriteLine("Triggered take screen shot");
+            Logger.Info("Triggered take screen shot");
 
 
             var aDisplay = Program._MonitorToWatch;
