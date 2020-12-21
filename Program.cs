@@ -30,7 +30,7 @@ namespace screencapture
 
         public static OaDisplayUx _OaDisplayUx;
         public static List<WorkItem> ActionQueue = new List<WorkItem>();
-        public static List<IOAWorker> WorkerList = new List<IOAWorker>();
+        public static List<GenericWorker> WorkerList = new List<GenericWorker>();
 
 
 
@@ -78,7 +78,7 @@ namespace screencapture
                 ActionQueue.Add(WorkItem.GetGenericWorkItem(WorkItemType.Kickoff));
             }
 
-            TakeScreenshotWorker screenShotworker = new TakeScreenshotWorker();
+            ScreenshotWorker screenShotworker = new ScreenshotWorker();
             WorkerList.Add(screenShotworker);
 
             Task.Run(() =>
@@ -92,7 +92,7 @@ namespace screencapture
 
             Task.Run(() =>
             {
-                screenShotworker.TakeScreenShotsLoop();
+                screenShotworker.WorkerLoop();
             });
 
 

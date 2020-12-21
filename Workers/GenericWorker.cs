@@ -11,36 +11,27 @@ using System.IO;
 
 namespace screencapture
 {
-    public class TakeScreenshotWorker : IOAWorker
+    public abstract class GenericWorker 
     {
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private long _lastWorkItemProcessed = 0;
         private long _highWaterMarkOkToTrim = 0;
-        private void TakeScreenShot(WorkItem triggeredWorkItem)
+        public abstract void DoWork(WorkItem triggeredWorkItem);
+
+        private List<WorkItemType> _triggers;
+        
+        public GenericWorker(List<WorkItemType> triggers)
         {
-            Console.WriteLine("Triggered take screen shot");
-
-
-            var aDisplay = Program._MonitorToWatch;
-            //Take Screenshot
-            Image img = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
-            Program._OaDisplayUx.SetImage(img);
-
-            WorkItem w = WorkItem.GetGenericWorkItem(WorkItemType.ScreenShotTaken);
-            w.WorkItemContext = img;
-            lock (Program.ActionQueue)
-            {
-                Program.ActionQueue.Add(w);
-            }
+            _triggers = triggers;
         }
 
-        long IOAWorker.WaterMarkOkToTrim()
+        public long WaterMarkOkToTrim()
         {
             return _highWaterMarkOkToTrim;
         }
-        public void TakeScreenShotsLoop()
+        public void WorkerLoop()
         {
             try
             {
@@ -58,8 +49,9 @@ namespace screencapture
                             if (item.CreatedTimeTick > highWaterMarkOkToTrim) highWaterMarkOkToTrim = item.CreatedTimeTick;
 
                             //Screenshot triggers on Kickoff, and Screenshotresults being available
-                            if (item.TypeOfWorkItem == WorkItemType.Kickoff || item.TypeOfWorkItem == WorkItemType.ScreenShotTaken)
+                            if (_triggers.Contains(item.TypeOfWorkItem))
                             {
+                                //look for the newest item that matches the type, and is older than the last processed item
                                 if (item.CreatedTimeTick > _lastWorkItemProcessed && item.CreatedTimeTick > workItemToExecute.CreatedTimeTick)
                                 {
                                     workItemToExecute = item;
@@ -73,7 +65,7 @@ namespace screencapture
                     //Process if possible
                     if (workItemToExecute.CreatedTimeTick > 0)
                     {
-                        TakeScreenShot(workItemToExecute);
+                        DoWork(workItemToExecute);
                         //Set the new baseline for picking up the next work item
                         _lastWorkItemProcessed = workItemToExecute.CreatedTimeTick;
 
