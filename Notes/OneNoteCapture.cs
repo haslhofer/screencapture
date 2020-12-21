@@ -65,7 +65,7 @@ namespace screencapture
             return res;
         }
 
-        public static async Task<string> AppendImage(System.Drawing.Image image, string pageId)
+        public static async Task<bool> AppendImage(System.Drawing.Image image, string pageId)
         {
             MemoryStream m = new MemoryStream();
             image.Save(m, ImageFormat.Jpeg);
@@ -77,7 +77,12 @@ namespace screencapture
             return await AppendImage(imgJpg, width, height, pageId);   
         }
 
-        private static async Task<string> AppendImage(byte[] jpeg, int width, int height, string pageId)
+        private static bool IsSuccess(System.Net.HttpStatusCode code)
+        {
+            return ((int)code>=200 && (int)code<300);
+        }
+
+        private static async Task<bool> AppendImage(byte[] jpeg, int width, int height, string pageId)
         {
         
             //Get Base64 encoding of string
@@ -108,11 +113,11 @@ namespace screencapture
             client.DefaultRequestHeaders.TryAddWithoutValidation("authorization", "Bearer " + _accessToken);
             HttpResponseMessage response = await client.SendAsync(req);
 
-            return response.StatusCode.ToString();
+            return IsSuccess(response.StatusCode);
 
         }
 
-        public static async Task<string> AppendImage(string pathToImage, string pageId)
+        public static async Task<bool> AppendImage(string pathToImage, string pageId)
         {
 
             //byte[] bytes = System.IO.File.ReadAllBytes(@"C:\data\temp2\capture_Image_637403620958932705_0.jpg"); 

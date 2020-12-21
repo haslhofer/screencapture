@@ -169,10 +169,17 @@ namespace screencapture
 
             Image imageToWrite = screenCapture.Image;
             string pageId = Configurator.DestinationOneNote.PageId;
-            string res = await OneNoteCapture.AppendImage(imageToWrite, pageId);
+            bool isSuccess = await OneNoteCapture.AppendImage(imageToWrite, pageId);
             Logger.Info("After write captured screenshot to OneNote");
+            if (!isSuccess)
+            {
+                MessageBox.Show("Failure when adding to OneNote", "Capture Image", MessageBoxButtons.OK);
+            }
+            else
+            {
+                this.statusTextBox.Text = "OneNote capture successful at " + DateTime.Now.ToLongTimeString();
+            }
 
-            MessageBox.Show(res, "Captured page", MessageBoxButtons.OK);
 
         }
 
