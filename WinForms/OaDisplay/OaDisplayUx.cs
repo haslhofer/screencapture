@@ -71,17 +71,21 @@ namespace screencapture
             this.buttonCaptureScreen = new System.Windows.Forms.Button();
             this.screenCapture = new System.Windows.Forms.PictureBox();
             this.statusTextBox = new System.Windows.Forms.TextBox();
+            this.spoolForward = new System.Windows.Forms.Button();
+            this.spoolBack = new System.Windows.Forms.Button();
+            this.resumeMirror = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.screenCapture)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCaptureScreen
             // 
             this.buttonCaptureScreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCaptureScreen.Location = new System.Drawing.Point(1043, 611);
+            this.buttonCaptureScreen.Location = new System.Drawing.Point(1133, 611);
             this.buttonCaptureScreen.Name = "buttonCaptureScreen";
-            this.buttonCaptureScreen.Size = new System.Drawing.Size(145, 47);
+            this.buttonCaptureScreen.Size = new System.Drawing.Size(50, 47);
             this.buttonCaptureScreen.TabIndex = 0;
-            this.buttonCaptureScreen.Text = "Capture Screen";
+            this.buttonCaptureScreen.Text = "📌";
+            this.buttonCaptureScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCaptureScreen.UseVisualStyleBackColor = true;
             this.buttonCaptureScreen.Click += CaptureClick_EventHandler;
             // 
@@ -106,12 +110,48 @@ namespace screencapture
             this.statusTextBox.Name = "statusTextBox";
             this.statusTextBox.Size = new System.Drawing.Size(969, 26);
             this.statusTextBox.TabIndex = 3;
+            // spoolForward
+            // 
+            this.spoolForward.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.spoolForward.Location = new System.Drawing.Point(1037, 611);
+            this.spoolForward.Name = "spoolForward";
+            this.spoolForward.Size = new System.Drawing.Size(37, 47);
+            this.spoolForward.TabIndex = 4;
+            this.spoolForward.Text = "▶️";
+            this.spoolForward.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.spoolForward.UseVisualStyleBackColor = true;
+            // 
+            // spoolBack
+            // 
+            this.spoolBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            
+            this.spoolBack.Location = new System.Drawing.Point(994, 611);
+            this.spoolBack.Name = "spoolBack";
+            this.spoolBack.Size = new System.Drawing.Size(37, 47);
+            this.spoolBack.TabIndex = 5;
+            this.spoolBack.Text = "◀️";
+            this.spoolBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.spoolBack.UseVisualStyleBackColor = true;
+            // 
+            // resumeMirror
+            // 
+            this.resumeMirror.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.resumeMirror.Location = new System.Drawing.Point(1080, 611);
+            this.resumeMirror.Name = "resumeMirror";
+            this.resumeMirror.Size = new System.Drawing.Size(37, 47);
+            this.resumeMirror.TabIndex = 6;
+            this.resumeMirror.Text = "▶️▶️";
+            this.resumeMirror.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.resumeMirror.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 670);
+             this.Controls.Add(this.resumeMirror);
+            this.Controls.Add(this.spoolBack);
+            this.Controls.Add(this.spoolForward);
             this.Controls.Add(this.statusTextBox);
             this.Controls.Add(this.screenCapture);
             this.Controls.Add(this.buttonCaptureScreen);
@@ -127,6 +167,10 @@ namespace screencapture
         private System.Windows.Forms.Button buttonCaptureScreen;
         private System.Windows.Forms.PictureBox screenCapture;
         private System.Windows.Forms.TextBox statusTextBox;
+        
+        private System.Windows.Forms.Button spoolForward;
+        private System.Windows.Forms.Button spoolBack;
+        private System.Windows.Forms.Button resumeMirror;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
