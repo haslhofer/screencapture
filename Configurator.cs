@@ -11,10 +11,7 @@ namespace screencapture
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        private static string HashTagConfigPath =@"C:\Users\gerhas\Documents\GitHub\hashtag\text\config.txt";
-        //private static List<string> OptedInPages = new List<string>() {"AI", "News", "Gerald Haslhofer", "Tim Franklin", "Vishnu Nath", "Shilpa Ranganathan", "Ryan McMinn", "Rachel Haslhofer", "Michael Howe"};
-        //public static IEnumerable<OneNoteDescriptor> OptedInOneNotes {get;set;}
-
+    
         private static string ONENOTE_DESTINATION_PAGE_NAME = "oacapture";
         public static OneNoteDescriptor DestinationOneNote {get;set;}
 
@@ -35,29 +32,5 @@ namespace screencapture
             }
             Logger.Info("After retrieve OneNotePages");
         }
-
-        /* public static void WriteConfig()
-        {
-            FileStream f = new FileStream(HashTagConfigPath, FileMode.Create);
-            StreamWriter w = new StreamWriter(f);
-            var hashTags = from x in OptedInOneNotes select x.PageTitle;
-            foreach (string aHashTag in hashTags)
-            {
-                w.WriteLine(aHashTag);
-            }
-            w.Flush();
-            w.Close();
-            
-            f.Close();
-        }
- */
-/*         public static string GetPageIdFromHashTag(string tag)
-        {
-            var oneNotePage = from x in OptedInOneNotes where x.PageTitle.Equals(tag) select x;            
-            return oneNotePage.First().PageId;
-            
-        } */
-
-
     }
 }

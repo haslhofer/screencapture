@@ -24,6 +24,8 @@ namespace screencapture
 
     public class OneNoteCapture
     {
+        private static float MaxWidth = 1200;
+
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static GraphServiceClient _graphClient;
         private static string _accessToken;
@@ -66,11 +68,21 @@ namespace screencapture
 
         public static async Task<bool> AppendImage(System.Drawing.Image image, string pageId)
         {
+            
+
             MemoryStream m = new MemoryStream();
             image.Save(m, ImageFormat.Jpeg);
             m.Flush();
             int width = image.Width;
             int height = image.Height;
+
+            if (width > MaxWidth)
+            {
+                height = (int)((float)height * (MaxWidth/width));
+                width = (int)MaxWidth;
+
+            }
+
             byte[] imgJpg = m.ToArray();
             m.Close();
             return await AppendImage(imgJpg, width, height, pageId);   
