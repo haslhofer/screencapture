@@ -48,6 +48,10 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "Microsoft.Extensions.FileProviders.Embedded": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
             "Microsoft.Graph": {
               "target": "Package",
               "version": "[3.20.0, )"

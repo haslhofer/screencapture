@@ -47,6 +47,9 @@ namespace screencapture
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OaDisplayUx));
+
+            this.components = new System.ComponentModel.Container();
             this.buttonCaptureScreen = new System.Windows.Forms.Button();
             this.screenCapture = new System.Windows.Forms.PictureBox();
             this.statusTextBox = new System.Windows.Forms.TextBox();
@@ -126,6 +129,19 @@ namespace screencapture
             this.resumeMirror.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.resumeMirror.UseVisualStyleBackColor = true;
             this.resumeMirror.Click += ResumeMirrorClick_EventHandler;
+            
+            notifyIcon1 = new NotifyIcon(this.components);
+             
+            var embeddedProvider = new Microsoft.Extensions.FileProviders.EmbeddedFileProvider(System.Reflection.Assembly.GetExecutingAssembly());
+            using (var reader = embeddedProvider.GetFileInfo("resources\\PDF.ico").CreateReadStream())
+            {
+                notifyIcon1.Icon  = new Icon(reader);
+            }
+            notifyIcon1.Visible = true;
+            notifyIcon1.Text = "Observational Assistance";
+            notifyIcon1.Click += OnNotify_Click;
+
+
             // 
             // Form1
             // 
@@ -138,6 +154,7 @@ namespace screencapture
             this.Controls.Add(this.statusTextBox);
             this.Controls.Add(this.screenCapture);
             this.Controls.Add(this.buttonCaptureScreen);
+            
             this.Name = "Observational Assistance";
             this.Text = "Observational Assistance";
             ((System.ComponentModel.ISupportInitialize)(this.screenCapture)).EndInit();
@@ -154,6 +171,7 @@ namespace screencapture
         private System.Windows.Forms.Button spoolForward;
         private System.Windows.Forms.Button spoolBack;
         private System.Windows.Forms.Button resumeMirror;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
 
         private long _viewToken = 0;
 
@@ -161,6 +179,10 @@ namespace screencapture
 
 
 
+        private async void OnNotify_Click(Object sender, EventArgs e)
+        {
+            CaptureClick_EventHandler(sender, e);
+        }
 
         private async void CaptureClick_EventHandler(Object sender, EventArgs e)
         {

@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 using System.IO;
 using System.Windows.Forms;
 using NLog;
-
+using Microsoft.Extensions.FileProviders.Embedded;
 
 namespace screencapture
 {
@@ -41,6 +41,8 @@ namespace screencapture
             int MonitorIndex = 1
             )
         {
+
+           
 
 
 

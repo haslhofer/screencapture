@@ -50,7 +50,6 @@ namespace screencapture
 
         }
 
-
         public static async Task<List<OneNoteDescriptor>> GetAllPages()
         {
             List<OneNoteDescriptor> res = new List<OneNoteDescriptor>();
