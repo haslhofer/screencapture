@@ -36,6 +36,9 @@ namespace screencapture
         [DllImport("user32.dll")]
         public  static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll", EntryPoint="GetWindowLongPtr")]
+        public static extern long GetWindowLongPtr(IntPtr hWnd, int nIndex);
+
     }
 
 

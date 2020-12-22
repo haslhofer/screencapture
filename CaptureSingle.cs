@@ -32,7 +32,7 @@ namespace screencapture
         // static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
 
 
-        public static Image CaptureWindowFromDevice(string deviceName, int width, int height)
+        public static Image CaptureWindowFromDevice(string deviceName, int x, int y, int width, int height)
         {
 
             
@@ -46,7 +46,7 @@ namespace screencapture
             // select the bitmap object
             IntPtr hOld = GDI32.SelectObject(hdcDest,hBitmap);
             // bitblt over
-            GDI32.BitBlt(hdcDest,0,0,width,height,hdcSrc,0,0,GDI32.SRCCOPY);
+            GDI32.BitBlt(hdcDest,0,0,width,height,hdcSrc,x,y,GDI32.SRCCOPY);
             // restore selection
             GDI32.SelectObject(hdcDest,hOld);
             // clean up

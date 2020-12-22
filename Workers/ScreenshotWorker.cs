@@ -26,8 +26,12 @@ namespace screencapture
 
 
             var aDisplay = Program._MonitorToWatch;
+
+            var Rec = Program.IdealMonitorRectWorker.BestRectangle();
+
+
             //Take Screenshot
-            Image img = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, aDisplay.ScreenWidth, aDisplay.ScreenHeight);
+            Image img = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
             Program._OaDisplayUx.SetImage(img);
 
             WorkItem w = WorkItem.GetGenericWorkItem(WorkItemType.ScreenShotTaken);

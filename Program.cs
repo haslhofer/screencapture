@@ -34,7 +34,9 @@ namespace screencapture
 
         public static ImageCacheWorker CacheWorker;
 
+        public static IdealMonitorRect IdealMonitorRectWorker;
 
+       
 
         [STAThread]
         static int Main(
@@ -42,7 +44,7 @@ namespace screencapture
             )
         {
 
-           
+
 
 
 
@@ -53,6 +55,17 @@ namespace screencapture
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
 
+
+            
+            MonitorHelper h = new MonitorHelper();
+            var displays = h.GetDisplays();
+            Logger.Info("App assumes there are two monitors. # Displays detected:" + displays.Count.ToString());
+
+            _MonitorToWatch = displays[MonitorIndex];
+
+            IdealMonitorRectWorker = new IdealMonitorRect(_MonitorToWatch);
+
+         
             //Authenticate with MS Graph
             Logger.Info("Preparing for OneNoteAuthentication");
             OneNoteCapture.Init();
@@ -62,11 +75,6 @@ namespace screencapture
 
             //Determine the screen to watch
 
-            MonitorHelper h = new MonitorHelper();
-            var displays = h.GetDisplays();
-            Logger.Info("App assumes there are two monitors. # Displays detected:" + displays.Count.ToString());
-
-            _MonitorToWatch = displays[MonitorIndex];
 
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
@@ -86,7 +94,7 @@ namespace screencapture
             WorkerList.Add(screenShotworker);
             ImageCacheWorker cacheWorker = new ImageCacheWorker();
             CacheWorker = cacheWorker;
-            
+
             WorkerList.Add(cacheWorker);
 
             foreach (var worker in WorkerList)
@@ -108,7 +116,15 @@ namespace screencapture
                 }
             });
 
-            
+             Task.Run(() =>
+            {
+                while (true)
+                {
+                    IdealMonitorRectWorker.DetermineRect();
+                    Thread.Sleep(5000);
+                }
+            });
+
 
 
 
