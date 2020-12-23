@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "9vcDxYUOoNU5OzbWZeq/jGeBHRAyRyuqiSeIH2bR+LYVSU4gdIjhPpZXPe/1ewjbTKL6AAiWFs0izutPYklnhQ==",
+  "dgSpecHash": "PLBjScVjvoQLZTcnSDgzOx2eJyPuqBtBLKqSDk+BAYl9uFSTF49zTrZwydxtHbjP39w9n3Qren5IE/VUyWKqWQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\screencapture.csproj",
   "expectedPackageFiles": [
@@ -75,6 +75,7 @@
     "C:\\Users\\gerhas\\.nuget\\packages\\system.linq.expressions\\4.1.0\\system.linq.expressions.4.1.0.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\system.net.http\\4.3.3\\system.net.http.4.3.3.nupkg.sha512",
+    "C:\\Users\\gerhas\\.nuget\\packages\\system.net.http.json\\5.0.0\\system.net.http.json.5.0.0.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\system.net.primitives\\4.3.0\\system.net.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\system.net.sockets\\4.1.0\\system.net.sockets.4.1.0.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\system.objectmodel\\4.0.12\\system.objectmodel.4.0.12.nupkg.sha512",

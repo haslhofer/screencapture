@@ -45,6 +45,7 @@ namespace screencapture
         {
 
 
+            //var res = Embeddings.GetEmbeddingFromText("Dudi Wudi").GetAwaiter().GetResult();
 
 
 

@@ -1105,6 +1105,18 @@
           }
         }
       },
+      "System.Net.Http.Json/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Text.Json": "5.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.Net.Http.Json.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Net.Http.Json.dll": {}
+        }
+      },
       "System.Net.Primitives/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -4174,6 +4186,28 @@
         "system.net.http.nuspec"
       ]
     },
+    "System.Net.Http.Json/5.0.0": {
+      "sha512": "3CPSQpCzEmI9o+1G79TnPCjF40omCdnoXj2Rg76BDwGj5+LZnFPjV+t35eedlvl+uthmholk/XXxXTYgJWSexw==",
+      "type": "package",
+      "path": "system.net.http.json/5.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Net.Http.Json.dll",
+        "lib/net461/System.Net.Http.Json.xml",
+        "lib/net5.0/System.Net.Http.Json.dll",
+        "lib/net5.0/System.Net.Http.Json.xml",
+        "lib/netstandard2.0/System.Net.Http.Json.dll",
+        "lib/netstandard2.0/System.Net.Http.Json.xml",
+        "system.net.http.json.5.0.0.nupkg.sha512",
+        "system.net.http.json.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Net.Primitives/4.3.0": {
       "sha512": "qOu+hDwFwoZPbzPvwut2qATe3ygjeQBDQj91xlsaqGFQUI5i4ZnZb8yyQuLGpDGivEPIt8EJkd1BVzVoP31FXA==",
       "type": "package",
@@ -6214,6 +6248,7 @@
       "System.CommandLine >= 2.0.0-beta1.20253.1",
       "System.CommandLine.DragonFruit >= 0.3.0-alpha.20253.1",
       "System.Drawing.Common >= 5.0.0",
+      "System.Net.Http.Json >= 5.0.0",
       "System.Runtime.WindowsRuntime >= 4.7.0",
       "docxcore >= 1.0.9",
       "newtonsoft.json >= 12.0.3",
@@ -6292,6 +6327,10 @@
             "version": "[0.3.0-alpha.20253.1, )"
           },
           "System.Drawing.Common": {
+            "target": "Package",
+            "version": "[5.0.0, )"
+          },
+          "System.Net.Http.Json": {
             "target": "Package",
             "version": "[5.0.0, )"
           },
