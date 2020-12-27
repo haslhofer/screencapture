@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using System.Threading.Tasks;
 
 
 namespace screencapture
@@ -18,7 +19,7 @@ namespace screencapture
 
         private long _lastWorkItemProcessed = 0;
         private long _highWaterMarkOkToTrim = 0;
-        public abstract void DoWork(WorkItem triggeredWorkItem);
+        public abstract Task<bool> DoWork(WorkItem triggeredWorkItem);
 
         private List<WorkItemType> _triggers;
         
@@ -31,7 +32,7 @@ namespace screencapture
         {
             return _highWaterMarkOkToTrim;
         }
-        public void WorkerLoop()
+        public async void WorkerLoop()
         {
             try
             {
@@ -65,8 +66,12 @@ namespace screencapture
                     //Process if possible
                     if (workItemToExecute.CreatedTimeTick > 0)
                     {
-                        DoWork(workItemToExecute);
+                        bool isSuccess = await DoWork(workItemToExecute);
                         //Set the new baseline for picking up the next work item
+                        if (!isSuccess)
+                        {
+                            Logger.Error("Task performed not successful");
+                        }
                         _lastWorkItemProcessed = workItemToExecute.CreatedTimeTick;
 
                     }

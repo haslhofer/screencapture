@@ -21,6 +21,7 @@ namespace screencapture
     public class OcrHelperWindows
     {
         private static OcrEngine _ocrEngine;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void InitOCr()
         {
@@ -51,6 +52,39 @@ namespace screencapture
             return myDeserializedClass.Text;
 
         }
+
+        public static async Task<string> GetFullTextFromImage(Image img)
+        {
+
+            try
+            {
+            StringBuilder b = new StringBuilder();
+
+            using (var stream = new Windows.Storage.Streams.InMemoryRandomAccessStream())
+            {
+                img.Save(stream.AsStream(), System.Drawing.Imaging.ImageFormat.Bmp);
+                //These steps to get to a SoftwareBitmap are aweful! 
+                Windows.Graphics.Imaging.BitmapDecoder decoder = await Windows.Graphics.Imaging.BitmapDecoder.CreateAsync(stream);
+                SoftwareBitmap bitmap = await decoder.GetSoftwareBitmapAsync();
+
+                OcrResult ocrResult = await _ocrEngine.RecognizeAsync(bitmap);
+                for (int i = 0; i < ocrResult.Lines.Count; i++)
+                {
+                    b.Append(ocrResult.Lines[i].Text);
+                    b.Append(" ");
+                }
+
+            }
+            return b.ToString();
+            }catch (Exception ex)
+            {
+               Logger.Error(ex.ToString());
+            }
+            return string.Empty;
+
+
+        }
+
 
         public static async Task<string> GetFullText2(string pathToImg)
         {

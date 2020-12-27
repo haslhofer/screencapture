@@ -23,7 +23,10 @@ namespace screencapture
     public class Embeddings
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
-        private static string EMBEDDING_SERVER = "http://127.0.0.1:5000/embedding";
+        //private static string EMBEDDING_SERVER = "http://127.0.0.1:5000/embedding";
+        private static string EMBEDDING_SERVER = "http://20.55.5.215:80/embedding";
+
+        
         private static bool IsSuccess(System.Net.HttpStatusCode code)
         {
             return ((int)code >= 200 && (int)code < 300);

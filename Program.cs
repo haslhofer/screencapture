@@ -45,13 +45,15 @@ namespace screencapture
         {
 
 
-            //var res = Embeddings.GetEmbeddingFromText("Dudi Wudi").GetAwaiter().GetResult();
+            //var ax = Embeddings.GetEmbeddingFromText("Dudi Wudi").GetAwaiter().GetResult();
 
 
 
             ConfigureLogging();
             Logger.Info("Startup");
             Logger.Info("Monitor to use:" + MonitorIndex.ToString());
+
+            OcrHelperWindows.InitOCr();
 
             bool result = SHCore.SetProcessDpiAwareness(SHCore.PROCESS_DPI_AWARENESS.Process_Per_Monitor_DPI_Aware);
             var setDpiError = Marshal.GetLastWin32Error();
@@ -91,12 +93,20 @@ namespace screencapture
                 ActionQueue.Add(WorkItem.GetGenericWorkItem(WorkItemType.Kickoff));
             }
 
+            //Capture screenshot
             ScreenshotWorker screenShotworker = new ScreenshotWorker();
             WorkerList.Add(screenShotworker);
+            
+            //Cache image for history feature
             ImageCacheWorker cacheWorker = new ImageCacheWorker();
             CacheWorker = cacheWorker;
-
             WorkerList.Add(cacheWorker);
+
+            //Perform OCR to determine embeddings
+            OcrWorker ocrWorker = new OcrWorker();
+            WorkerList.Add(ocrWorker);
+
+
 
             foreach (var worker in WorkerList)
             {

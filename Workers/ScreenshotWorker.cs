@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -20,7 +21,7 @@ namespace screencapture
         {   
         }
         
-        public override void DoWork(WorkItem triggeredWorkItem)
+        public override async Task<bool> DoWork(WorkItem triggeredWorkItem)
         {
             Logger.Info("Triggered take screen shot");
 
@@ -32,7 +33,8 @@ namespace screencapture
 
             //Take Screenshot
             Image img = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
-            Program._OaDisplayUx.SetImage(img);
+            
+            Program._OaDisplayUx.SetImage((Image)img.Clone());
 
             WorkItem w = WorkItem.GetGenericWorkItem(WorkItemType.ScreenShotTaken);
             w.WorkItemContext = img;
@@ -40,6 +42,7 @@ namespace screencapture
             {
                 Program.ActionQueue.Add(w);
             }
+            return true;
         }
     }
 }

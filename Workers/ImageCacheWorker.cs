@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using System.Threading.Tasks;
 
 
 namespace screencapture
@@ -99,7 +100,7 @@ namespace screencapture
             }
         }
 
-        public override void DoWork(WorkItem triggeredWorkItem)
+        public override async Task<bool> DoWork(WorkItem triggeredWorkItem)
         {
             if (_cacheMode == CacheMode.Capture)
             {
@@ -121,6 +122,8 @@ namespace screencapture
                     }
                 }
             }
+
+            return true;
 
         }
 

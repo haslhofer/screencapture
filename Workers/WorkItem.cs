@@ -15,7 +15,8 @@ namespace screencapture
     {
         Kickoff = 0,
         TimerElapsed = 1,
-        ScreenShotTaken = 2
+        ScreenShotTaken = 2,
+        OcrPerformed = 3
     }
 
 //Workitem for the main Queue
