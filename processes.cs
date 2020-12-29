@@ -54,7 +54,13 @@ namespace screencapture
                                 {
                                     if (!(a.AppName.Contains("Entertainment") && a.AppName.Contains("Platform")))
                                     {
-                                        results.Add(a);
+                                        if (!(a.AppName.Contains("GlobalProtect ")))
+                                        {
+                                            if (!(a.AppName.Contains("Cortana") || a.AppName.Contains("screencapture")))
+                                            {
+                                                results.Add(a);
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -62,7 +68,7 @@ namespace screencapture
                     }
 
                 }
-                
+
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.ToString());
@@ -73,19 +79,19 @@ namespace screencapture
 
         }
 
-    public static bool HasWindowStyle(Process p)
-    {
-        IntPtr hnd = p.MainWindowHandle;
-        UInt32 WS_DISABLED = 0x8000000;
-        int GWL_STYLE = -16;
-        bool visible = false;
-        if (hnd != IntPtr.Zero)
+        public static bool HasWindowStyle(Process p)
         {
-            UInt32 style = (UInt32)User32.GetWindowLongPtr(hnd, GWL_STYLE);
-            visible = ((style & WS_DISABLED) != WS_DISABLED);
+            IntPtr hnd = p.MainWindowHandle;
+            UInt32 WS_DISABLED = 0x8000000;
+            int GWL_STYLE = -16;
+            bool visible = false;
+            if (hnd != IntPtr.Zero)
+            {
+                UInt32 style = (UInt32)User32.GetWindowLongPtr(hnd, GWL_STYLE);
+                visible = ((style & WS_DISABLED) != WS_DISABLED);
+            }
+            return visible;
         }
-        return visible;
-    }
 
-}
+    }
 }

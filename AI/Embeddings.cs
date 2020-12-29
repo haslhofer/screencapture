@@ -6,10 +6,13 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Net.Http;
 using System.Net.Http.Json;
-
+using System.Windows;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+
 
 namespace screencapture
 {
@@ -17,7 +20,7 @@ namespace screencapture
     public class TextEmbedding
     {
         public string SourceText { get; set; }
-        public List<double> Vector { get; set; }
+        public double[] EmbeddingVector { get; set; }
     }
 
     public class Embeddings
@@ -64,8 +67,9 @@ namespace screencapture
                 if (response.IsSuccessStatusCode)
                 {
 
-                    List<double> vector = await response.Content.ReadFromJsonAsync<List<double>>();
-                    TextEmbedding res = new TextEmbedding() { SourceText = textToEmbed, Vector = vector };
+                    List<double> listVector = await response.Content.ReadFromJsonAsync<List<double>>();
+
+                    TextEmbedding res = new TextEmbedding() { SourceText = textToEmbed, EmbeddingVector = listVector.ToArray()};
                     return res;
                 }
                 else

@@ -186,23 +186,20 @@ namespace screencapture
 
         private async void CaptureClick_EventHandler(Object sender, EventArgs e)
         {
-
             Logger.Info("Before write captured screenshot to OneNote");
+            //var img = Program.CacheWorker.GenerateTopNImages(2);
 
             Image imageToWrite = screenCapture.Image;
-            string pageId = Configurator.DestinationOneNote.PageId;
-            bool isSuccess = await OneNoteCapture.AppendImage(imageToWrite, pageId);
-            Logger.Info("After write captured screenshot to OneNote");
-            if (!isSuccess)
+            var capResult = await GenerateSummary.CaptureSummaryToOneNote(imageToWrite);
+
+            if (!capResult.IsSuccess)
             {
-                MessageBox.Show("Failure when adding to OneNote", "Capture Image", MessageBoxButtons.OK);
+                MessageBox.Show(capResult.UserMessage, "Capture Image", MessageBoxButtons.OK);
             }
             else
             {
-                this.statusTextBox.Text = "OneNote capture successful at " + DateTime.Now.ToLongTimeString();
+                this.statusTextBox.Text = capResult.UserMessage;
             }
-
-
         }
 
         private void SetStatusFromToken()

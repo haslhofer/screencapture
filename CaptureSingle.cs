@@ -32,7 +32,7 @@ namespace screencapture
         // static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, IntPtr lpInitData);
 
 
-        public static Image CaptureWindowFromDevice(string deviceName, int x, int y, int width, int height)
+        public static Tuple<Image,byte[]>  CaptureWindowFromDevice(string deviceName, int x, int y, int width, int height)
         {
 
             
@@ -53,10 +53,17 @@ namespace screencapture
             GDI32.DeleteDC(hdcDest);
             GDI32.DeleteDC(hdcSrc);
             // get a .NET image object for it
-            Image img = Image.FromHbitmap(hBitmap);
+            Image img1 = Image.FromHbitmap(hBitmap);
+            System.IO.MemoryStream m = new System.IO.MemoryStream();
+
+            img1.Save(m, ImageFormat.Bmp);
+            m.Flush();
+            byte[] raw = m.ToArray();
+            m.Close();
+            
             // free up the Bitmap object
             GDI32.DeleteObject(hBitmap);
-            return img;
+            return new Tuple<Image, byte[]>(img1, raw);
         }
 
         public static Image CaptureWindow(IntPtr handle)

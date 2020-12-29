@@ -22,6 +22,41 @@ namespace screencapture
             }
             return bmp;
         }
+
+        public static Image HorizontalConcatenate(List<Image> images, double desiredWidth)
+        {
+            //Images have different ratios
+            //First determine width each image would have if scaled to the same height
+            double desiredHeight = 200;
+            double totalScaledWidth = 0;
+            foreach (var i in images) { 
+                //Assume each image has fixed heigth of 200
+                double scaledWidth = (desiredHeight / (double)i.Height) * (double)i.Width;
+                totalScaledWidth += scaledWidth;
+            }
+
+            double xScale = desiredWidth / totalScaledWidth;
+            double finalHeight = desiredHeight * xScale;
+
+            //Now we know that if we scale each image to finalHeight, the sum of all width will equate desiredWidth
+
+            Bitmap bmp = new Bitmap((int)desiredWidth, (int)finalHeight);
+            using (Graphics graph = Graphics.FromImage(bmp))
+            {
+                double curX = 0;
+                foreach (var i in images)
+                {
+                    double newWidth = finalHeight / (double)i.Height * (double)i.Width;
+                    graph.DrawImage(i, (int)curX, 0, (int)newWidth, (int)finalHeight );
+                    curX += newWidth;
+                }
+
+                graph.Flush();
+            }
+            
+            return bmp;
+
+        }
         public static void RenderBitmapFromTextSnippets(Bitmap bmp, List<ScreenText> snippets)
         {
 
@@ -57,6 +92,7 @@ namespace screencapture
 
                 // Draw the text onto the image
                 g.DrawString(snip.Content, new Font("Tahoma", 6), Brushes.Black, rectf, format);
+                
 
                 g.DrawRectangle(Pens.Red, rect);
             }

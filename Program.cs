@@ -44,9 +44,12 @@ namespace screencapture
             )
         {
 
+            /* string text1 = File.ReadAllText(@"C:\data\dump\item6.txt");
+            string text2 = File.ReadAllText(@"C:\data\dump\item7.txt");
 
-            //var ax = Embeddings.GetEmbeddingFromText("Dudi Wudi").GetAwaiter().GetResult();
-
+            var ax = Embeddings.GetEmbeddingFromText(text1).GetAwaiter().GetResult();
+            var ay = Embeddings.GetEmbeddingFromText(text2).GetAwaiter().GetResult();
+            var distance = MathNet.Numerics.Distance.Cosine(ax.EmbeddingVector, ay.EmbeddingVector); */
 
 
             ConfigureLogging();
@@ -103,8 +106,8 @@ namespace screencapture
             WorkerList.Add(cacheWorker);
 
             //Perform OCR to determine embeddings
-            OcrWorker ocrWorker = new OcrWorker();
-            WorkerList.Add(ocrWorker);
+            //OcrWorker ocrWorker = new OcrWorker();
+            //WorkerList.Add(ocrWorker);
 
 
 

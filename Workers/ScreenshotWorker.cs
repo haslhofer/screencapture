@@ -32,12 +32,12 @@ namespace screencapture
 
 
             //Take Screenshot
-            Image img = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
+            Tuple<Image, byte[]> imgTuple = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
             
-            Program._OaDisplayUx.SetImage((Image)img.Clone());
+            Program._OaDisplayUx.SetImage(imgTuple.Item1);
 
             WorkItem w = WorkItem.GetGenericWorkItem(WorkItemType.ScreenShotTaken);
-            w.WorkItemContext = img;
+            w.WorkItemContext = imgTuple.Item2;
             lock (Program.ActionQueue)
             {
                 Program.ActionQueue.Add(w);

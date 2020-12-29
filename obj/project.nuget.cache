@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "PLBjScVjvoQLZTcnSDgzOx2eJyPuqBtBLKqSDk+BAYl9uFSTF49zTrZwydxtHbjP39w9n3Qren5IE/VUyWKqWQ==",
+  "dgSpecHash": "uKCdYGkDu6qFLdx1dZJ2X0ep98s73Z83m8SWpRBg/M8lhij0evROPKb8vQFR0jxjyGj9tBSCy12YKp7cpuJQ9w==",
   "success": true,
   "projectFilePath": "C:\\Users\\gerhas\\Documents\\GitHub\\screencapture\\screencapture.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gerhas\\.nuget\\packages\\docxcore\\1.0.9\\docxcore.1.0.9.nupkg.sha512",
+    "C:\\Users\\gerhas\\.nuget\\packages\\mathnet.numerics\\4.12.0\\mathnet.numerics.4.12.0.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.csharp\\4.4.1\\microsoft.csharp.4.4.1.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.dotnet.platformabstractions\\2.0.4\\microsoft.dotnet.platformabstractions.2.0.4.nupkg.sha512",
     "C:\\Users\\gerhas\\.nuget\\packages\\microsoft.extensions.configuration\\5.0.0\\microsoft.extensions.configuration.5.0.0.nupkg.sha512",
