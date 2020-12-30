@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Text; 
 
+//comment
 namespace screencapture
 {
     public class NameClean
