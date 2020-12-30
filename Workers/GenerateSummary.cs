@@ -22,8 +22,8 @@ namespace screencapture
         
         private static Image GenerateThumbnails()
         {
-            List<Image> cacheItems = Program.CacheWorker.GetLastNCachedItems(3);
-            var img = RenderImage.HorizontalConcatenate(cacheItems, 1000);
+            List<Image> cacheItems = Program.CacheWorker.GetLastNCachedItems(5);
+            var img = RenderImage.HorizontalConcatenate(cacheItems, OneNoteCapture.MaxWidthOneNoteImage);
             //img.Save(@"c:\data\dump\concat.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
             return img;
         }
@@ -35,10 +35,10 @@ namespace screencapture
             string result = string.Empty;
             string pageId = Configurator.DestinationOneNote.PageId;
 
-            bool isSuccess = await OneNoteCapture.AppendImage(imageToWrite, pageId);
+            bool isSuccess = await OneNoteCapture.AppendImage(imageToWrite, pageId, "Test");
             if (isSuccess)
             {
-                 isSuccess = await OneNoteCapture.AppendImage(imgThumb, pageId);
+                 isSuccess = await OneNoteCapture.AppendImage(imgThumb, pageId, "Test2");
             }
 
             CaptureResult c = new CaptureResult();

@@ -56,6 +56,8 @@ namespace screencapture
 
             ScreenRectangle monitorRect = new ScreenRectangle(monitor.WorkArea);
             System.Drawing.Rectangle rMonitor = RecFromScreenRec(monitorRect);
+            System.Drawing.Rectangle rMonitor2 = new Rectangle(rMonitor.Left-15, rMonitor.Top-15, rMonitor.Width+30, rMonitor.Height+30);
+            
 
             foreach (var anApp in allApps)
             {
@@ -64,7 +66,7 @@ namespace screencapture
                 System.Drawing.Rectangle appRec = RecFromScreenRec(anApp.Rect);
                 if (IsMinAppSize(appRec))
                 {
-                    if (rMonitor.Contains(appRec))
+                    if (rMonitor.Contains(appRec) || rMonitor2.Contains(appRec))
                     {
                         System.Diagnostics.Debug.WriteLine(anApp.AppName + "contained on Monitor");
                         if (isFirstRect)
@@ -80,6 +82,8 @@ namespace screencapture
                 }
 
             }
+
+            if (!IsMinAppSize(boundingRec)) return rMonitor;
 
             return boundingRec;
 

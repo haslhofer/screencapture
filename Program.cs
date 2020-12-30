@@ -67,6 +67,12 @@ namespace screencapture
             var displays = h.GetDisplays();
             Logger.Info("App assumes there are two monitors. # Displays detected:" + displays.Count.ToString());
 
+            if (MonitorIndex >= displays.Count)
+            {
+                MonitorIndex = 0;
+                Logger.Warn("fell back to monitoring Monitor 0");
+            }
+
             _MonitorToWatch = displays[MonitorIndex];
 
             IdealMonitorRectWorker = new IdealMonitorRect(_MonitorToWatch);

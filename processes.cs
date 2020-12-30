@@ -54,11 +54,14 @@ namespace screencapture
                                 {
                                     if (!(a.AppName.Contains("Entertainment") && a.AppName.Contains("Platform")))
                                     {
-                                        if (!(a.AppName.Contains("GlobalProtect ")))
+                                        if (!(a.AppName.Contains("Windows Store")))
                                         {
-                                            if (!(a.AppName.Contains("Cortana") || a.AppName.Contains("screencapture")))
+                                            if (!(a.AppName.Contains("GlobalProtect")))
                                             {
-                                                results.Add(a);
+                                                if (!(a.AppName.Contains("Cortana") || a.AppName.Contains("screencapture")))
+                                                {
+                                                    results.Add(a);
+                                                }
                                             }
                                         }
                                     }
