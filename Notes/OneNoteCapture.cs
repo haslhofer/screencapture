@@ -24,7 +24,7 @@ namespace screencapture
 
     public class OneNoteCapture
     {
-        private static float MaxWidth = 1200;
+        public static float MaxWidthOneNoteImage = 1200;
 
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static GraphServiceClient _graphClient;
@@ -66,7 +66,7 @@ namespace screencapture
             return res;
         }
 
-        public static async Task<bool> AppendImage(System.Drawing.Image image, string pageId)
+        public static async Task<bool> AppendImage(System.Drawing.Image image, string pageId, string imageText)
         {
             
 
@@ -76,16 +76,16 @@ namespace screencapture
             int width = image.Width;
             int height = image.Height;
 
-            if (width > MaxWidth)
+            if (width > MaxWidthOneNoteImage)
             {
-                height = (int)((float)height * (MaxWidth/width));
-                width = (int)MaxWidth;
+                height = (int)((float)height * (MaxWidthOneNoteImage/width));
+                width = (int)MaxWidthOneNoteImage;
 
             }
 
             byte[] imgJpg = m.ToArray();
             m.Close();
-            return await AppendImage(imgJpg, width, height, pageId);   
+            return await AppendImage(imgJpg, width, height, pageId, imageText);   
         }
 
         private static bool IsSuccess(System.Net.HttpStatusCode code)
@@ -93,12 +93,12 @@ namespace screencapture
             return ((int)code>=200 && (int)code<300);
         }
 
-        private static async Task<bool> AppendImage(byte[] jpeg, int width, int height, string pageId)
+        private static async Task<bool> AppendImage(byte[] jpeg, int width, int height, string pageId, string imageText)
         {
         
             //Get Base64 encoding of string
             string base64String = Convert.ToBase64String(jpeg, 0, jpeg.Length);  
-            string imageDataURL = string.Format("data:image/jpeg;base64,{0}", base64String);  //attempt6
+            string imageDataURL = string.Format("data:image/jpeg;base64,{0}", base64String);  
 
             string imgSrc = "'<img src=" + imageDataURL + @" width=""" + width + @""" height=""" + height + @"""/>'";
 
@@ -107,7 +107,7 @@ namespace screencapture
                             'target': 'body',
                             'action': 'append',
                             'position': 'after',
-                            'content': " + imgSrc + " }]";
+                            'content': " + imageText + imgSrc + " }]";
 
 
             var content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
@@ -138,7 +138,7 @@ namespace screencapture
             int width = myImg.Width;
             int height = myImg.Height;
 
-            return await AppendImage(bytes, width, height, pageId);
+            return await AppendImage(bytes, width, height, pageId, string.Empty);
 
         }
     }
