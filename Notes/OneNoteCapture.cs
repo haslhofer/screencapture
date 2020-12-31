@@ -107,7 +107,7 @@ namespace screencapture
                             'target': 'body',
                             'action': 'append',
                             'position': 'after',
-                            'content': " + imageText + imgSrc + " }]";
+                            'content': " + imgSrc + " }]";
 
 
             var content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
