@@ -21,10 +21,52 @@ namespace screencapture
 
         private static long RELEVANT_HISTORY_TICK = new TimeSpan(0, 0, 10).Ticks;
 
+        public Rectangle GetMovingRegion(System.Drawing.Bitmap bmp)
+        {
+            long min_changed_date = DateTime.Now.Ticks - RELEVANT_HISTORY_TICK;
+
+            int minXchanged = int.MaxValue;
+            int maxXchanged = 0;
+            int minYchanged = int.MaxValue;
+            int maxYchanged = 0;
+        
+            //Take pixels
+            for (int x = 0; x < _xdim; x++)
+            {
+                for (int y = 0; y < _ydim; y++)
+                {
+
+                    if (_values[x, y] > min_changed_date) //Sensor was changed recently
+                    {
+                        if (x<minXchanged) minXchanged =x;
+                        if (x>maxXchanged) maxXchanged = x;
+                        if (y<minYchanged) minYchanged =y;
+                        if (y>maxYchanged) maxYchanged = y;
+                        
+                    }
+                }
+            }
+
+            var minScale = ScaleXY(minXchanged, minYchanged, bmp);
+            var maxScale = ScaleXY(maxXchanged, maxYchanged, bmp);
+
+            return new Rectangle(minScale.Item1, minScale.Item2, maxScale.Item1 - minScale.Item1, maxScale.Item2 - minScale.Item2 );
+
+        }
+
+        
+
         public void OverlaySnapshot(System.Drawing.Bitmap bmp)
         {
 
             long min_changed_date = DateTime.Now.Ticks - RELEVANT_HISTORY_TICK;
+
+            int minXchanged = int.MaxValue;
+            int maxXchanged = 0;
+            int minYchanged = int.MaxValue;
+            int maxYchanged = 0;
+        
+
 
             //Take pixels
             for (int x = 0; x < _xdim; x++)
@@ -34,15 +76,35 @@ namespace screencapture
 
                     if (_values[x, y] > min_changed_date) //Sensor was changed recently
                     {
-                        int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
-                        int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
-                        RenderImage.SetMarkerAtPosition(bmp, xPos, yPos);
+                        if (x<minXchanged) minXchanged =x;
+                        if (x>maxXchanged) maxXchanged = x;
+                        if (y<minYchanged) minYchanged =y;
+                        if (y>maxYchanged) maxYchanged = y;
+
+                        var t = ScaleXY(x,y,bmp);
+
+                        RenderImage.SetMarkerAtPosition(bmp, t.Item1, t.Item2);
                         
                     }
                 }
             }
 
+            var minScale = ScaleXY(minXchanged, minYchanged, bmp);
+            var maxScale = ScaleXY(maxXchanged, maxYchanged, bmp);
+
+
+            RenderImage.SetBoundaryRect(bmp, minScale.Item1,minScale.Item2, maxScale.Item1,maxScale.Item2);
+
         }
+
+        private Tuple<int, int> ScaleXY(int x, int y, Bitmap bmp)
+        {
+            int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
+            int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
+            return new Tuple<int, int>(xPos, yPos);
+        }
+
+        
 
         public void Update(SensorSnapshot oldSnap, SensorSnapshot newSnap)
         {
@@ -152,6 +214,11 @@ namespace screencapture
         public void OverlayDeltaToBitmap(Bitmap b)
         {
             _delta.OverlaySnapshot(b);
+        }
+
+        public Rectangle GetMovingRegion(Bitmap bmp)
+        {
+            return _delta.GetMovingRegion(bmp);
         }
 
 

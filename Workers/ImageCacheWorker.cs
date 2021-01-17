@@ -13,11 +13,12 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace screencapture
 {
-    class ImageCacheItem
+    public class ImageCacheItem
     {
         public long TickTimeTaken { get; set; }
-        public Image ImageTaken { get; set; }
+        public Bitmap ImageTaken { get; set; }
         public TextEmbedding TextEmbeddingOfScreen { get; set; }
+        public Rectangle RegionWithMotion {get;set;}
 
     }
 
@@ -75,7 +76,7 @@ namespace screencapture
             }
         }
 
-        public Tuple<Image, long> GetPreviousFromToken(long token)
+        public Tuple<ImageCacheItem, long> GetPreviousFromToken(long token)
         {
             EnsureThatRetrieve();
             lock (_cache)
@@ -84,12 +85,12 @@ namespace screencapture
                 var prev = from x in _cache where x.TickTimeTaken < token select x;
                 var cacheItem = prev.OrderByDescending(i => i.TickTimeTaken).FirstOrDefault();
                 if (cacheItem == null) return null;
-                return new Tuple<Image, long>(cacheItem.ImageTaken, cacheItem.TickTimeTaken);
+                return new Tuple<ImageCacheItem, long>(cacheItem, cacheItem.TickTimeTaken);
             }
 
         }
 
-        public Tuple<Image, long> GetNextFromToken(long token)
+        public Tuple<ImageCacheItem, long> GetNextFromToken(long token)
         {
             EnsureThatRetrieve();
             lock (_cache)
@@ -98,7 +99,7 @@ namespace screencapture
                 var prev = from x in _cache where x.TickTimeTaken > token select x;
                 var cacheItem = prev.OrderBy(i => i.TickTimeTaken).FirstOrDefault();
                 if (cacheItem == null) return null;
-                return new Tuple<Image, long>(cacheItem.ImageTaken, cacheItem.TickTimeTaken);
+                return new Tuple<ImageCacheItem, long>(cacheItem, cacheItem.TickTimeTaken);
             }
         }
 
@@ -124,6 +125,7 @@ namespace screencapture
                         Bitmap i = RenderImage.BitmapFromBmpByteArray((byte[])triggeredWorkItem.WorkItemContext);
 
                         cacheItem.ImageTaken = i;
+                        cacheItem.RegionWithMotion = Program.MotionDetectionWorker.GetMovingRegion(i);
 
                         //string text = OcrHelperWindows.GetFullTextFromImage(i).GetAwaiter().GetResult();
                         //cacheItem.TextEmbeddingOfScreen = Embeddings.GetEmbeddingFromText(text).GetAwaiter().GetResult();

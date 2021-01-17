@@ -14,6 +14,18 @@ namespace screencapture
     public class RenderImage
     {
 
+        public static void SetBoundaryRect(Bitmap bmp, int x1, int y1, int x2, int y2 )
+        {
+            using (Graphics graph = Graphics.FromImage(bmp))
+            {
+                
+                Pen p = new Pen(new SolidBrush(Color.Red), 4);
+                graph.DrawRectangle(p, x1, y1, x2-x1, y2-y1);
+                graph.Flush();
+            }
+
+        }
+
         public static void SetMarkerAtPosition(Bitmap bmp, int x, int y)
         {
             using (Graphics graph = Graphics.FromImage(bmp))
@@ -40,6 +52,19 @@ namespace screencapture
                 graph.FillRectangle(Brushes.White, ImageSize);
             }
             return bmp;
+        }
+
+        public static Bitmap TrimBitmap(Bitmap master, Rectangle r)
+        {
+            Bitmap bmp = new Bitmap(r.Width, r.Height);
+            using (Graphics graph = Graphics.FromImage(bmp))
+            {
+                graph.DrawImage(master, (float)0, (float)0, r, GraphicsUnit.Pixel);
+                graph.Flush();
+            }
+            return bmp;
+
+
         }
 
         public static Image HorizontalConcatenate(List<Image> images, double desiredWidth)

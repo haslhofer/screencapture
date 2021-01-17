@@ -34,9 +34,14 @@ namespace screencapture
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public void DetermineRect()
         {
+
             //Determine rec
-            var appinfo = ProcessHelper.GetAppInfoList();
-            _bestRect  = GetBestRectangleOfMonitor(_monitorToWatch, appinfo);
+
+            //No adaptation
+            // TODO uncomment if needed again.
+
+            //var appinfo = ProcessHelper.GetAppInfoList();
+            //_bestRect  = GetBestRectangleOfMonitor(_monitorToWatch, appinfo);
 
         }
 

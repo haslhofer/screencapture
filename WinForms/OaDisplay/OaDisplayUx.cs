@@ -172,6 +172,7 @@ namespace screencapture
         private System.Windows.Forms.Button spoolBack;
         private System.Windows.Forms.Button resumeMirror;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private Rectangle _lastMotionRect;
 
         private long _viewToken = 0;
 
@@ -189,7 +190,12 @@ namespace screencapture
             Logger.Info("Before write captured screenshot to OneNote");
             //var img = Program.CacheWorker.GenerateTopNImages(2);
 
-            Image imageToWrite = screenCapture.Image;
+            Bitmap imageToWriteBase =(Bitmap)screenCapture.Image;
+            Bitmap imageToWrite = RenderImage.TrimBitmap(imageToWriteBase, _lastMotionRect);
+
+
+
+
             var capResult = await GenerateSummary.CaptureSummaryToOneNote(imageToWrite);
 
             if (!capResult.IsSuccess)
@@ -227,7 +233,10 @@ namespace screencapture
             var payload = Program.CacheWorker.GetPreviousFromToken(_viewToken);
             if (payload != null)
             {
-                screenCapture.Image = payload.Item1;
+                _lastMotionRect = payload.Item1.RegionWithMotion;
+                Bitmap bmp = payload.Item1.ImageTaken;
+                Render(bmp, payload.Item1.RegionWithMotion);
+                
                 _viewToken = payload.Item2;
             }
             SetStatusFromToken();
@@ -238,10 +247,20 @@ namespace screencapture
             var payload = Program.CacheWorker.GetNextFromToken(_viewToken);
             if (payload != null)
             {
-                screenCapture.Image = payload.Item1;
+                _lastMotionRect = payload.Item1.RegionWithMotion;
+                Bitmap bmp = payload.Item1.ImageTaken;
+                Render(bmp, payload.Item1.RegionWithMotion);
+                
                 _viewToken = payload.Item2;
             }
             SetStatusFromToken();
+        }
+
+        private void Render(Bitmap bmp, Rectangle r)
+        {
+            RenderImage.SetBoundaryRect(bmp, r.Left, r.Top, r.Right, r.Bottom);
+            screenCapture.Image = bmp;
+
         }
         private void ResumeMirrorClick_EventHandler(Object sender, EventArgs e)
         {
@@ -256,8 +275,11 @@ namespace screencapture
 
             if (Program.CacheWorker.GetCacheMode() == ImageCacheWorker.CacheMode.Capture)
             {
-                Program.MotionDetectionWorker.OverlayDeltaToBitmap(img);
-                
+                _lastMotionRect = Program.MotionDetectionWorker.GetMovingRegion(img);
+                //Program.MotionDetectionWorker.OverlayDeltaToBitmap(img);
+                RenderImage.SetBoundaryRect(img, _lastMotionRect.Left, _lastMotionRect.Top, _lastMotionRect.Right, _lastMotionRect.Bottom);
+                //Program.MotionDetectionWorker.OverlayDeltaToBitmap(img);
+
                 if (this.InvokeRequired)
                 {
                     InvokeUI(() =>

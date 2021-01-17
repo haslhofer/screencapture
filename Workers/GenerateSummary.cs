@@ -30,16 +30,16 @@ namespace screencapture
         public static async Task<CaptureResult> CaptureSummaryToOneNote(Image imageToWrite)
         {
 
-            var imgThumb = GenerateThumbnails();
+            //var imgThumb = GenerateThumbnails();
 
             string result = string.Empty;
             string pageId = Configurator.DestinationOneNote.PageId;
 
             bool isSuccess = await OneNoteCapture.AppendImage(imageToWrite, pageId, "Test");
-            if (isSuccess)
-            {
-                 isSuccess = await OneNoteCapture.AppendImage(imgThumb, pageId, "Test2");
-            }
+            //if (isSuccess)
+            //{
+            //     isSuccess = await OneNoteCapture.AppendImage(imgThumb, pageId, "Test2");
+            //}
 
             CaptureResult c = new CaptureResult();
             c.IsSuccess = isSuccess;
