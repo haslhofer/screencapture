@@ -88,10 +88,6 @@
               "target": "Package",
               "version": "[4.7.0, )"
             },
-            "docxcore": {
-              "target": "Package",
-              "version": "[1.0.9, )"
-            },
             "newtonsoft.json": {
               "target": "Package",
               "version": "[12.0.3, )"

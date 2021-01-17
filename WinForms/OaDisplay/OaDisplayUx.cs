@@ -250,7 +250,7 @@ namespace screencapture
             SetStatusFromToken();
         }
 
-        public void SetImage(Image img)
+        public void SetImage(Bitmap img)
         {
             if (Program.CacheWorker.GetCacheMode() == ImageCacheWorker.CacheMode.Capture)
             {
