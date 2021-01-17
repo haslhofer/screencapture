@@ -28,7 +28,7 @@ namespace screencapture
         private bool _isChanged = false;
         public SensorSnapshot(int xDim, int yDim)
         {
-            _values = new int[xDim,yDim];
+            _values = new int[xDim, yDim];
             _xdim = xDim;
             _ydim = yDim;
             _kind = SnapshotKind.Raw;
@@ -42,18 +42,18 @@ namespace screencapture
             _ydim = oldSnap.Ydim;
             System.Diagnostics.Debug.Assert(oldSnap.Xdim == newSnap.Xdim);
             System.Diagnostics.Debug.Assert(oldSnap.Ydim == newSnap.Ydim);
-            _values = new int[_xdim,_ydim];
-            
+            _values = new int[_xdim, _ydim];
+
             for (int x = 0; x < _xdim; x++)
             {
-                for (int y = 0; y <_ydim; y++)
+                for (int y = 0; y < _ydim; y++)
                 {
-                    int delta = oldSnap._values[x,y] - newSnap._values[x,y];
-                    _values[x,y] = delta;
-                    if (delta !=0)
+                    int delta = oldSnap._values[x, y] - newSnap._values[x, y];
+                    _values[x, y] = delta;
+                    if (delta != 0)
                     {
                         isChanged = true;
-                        sensorChanged ++;
+                        sensorChanged++;
                     }
                 }
 
@@ -65,28 +65,28 @@ namespace screencapture
         }
         public bool IsChanged
         {
-            get 
+            get
             {
                 System.Diagnostics.Debug.Assert(_kind == SnapshotKind.Delta);
                 return _isChanged;
             }
         }
 
-        public int[,] SnapshotValues 
+        public int[,] SnapshotValues
         {
             get
             {
                 return _values;
             }
         }
-        public int Xdim 
+        public int Xdim
         {
             get
             {
                 return _xdim;
             }
         }
-        public int Ydim 
+        public int Ydim
         {
             get
             {
@@ -100,15 +100,34 @@ namespace screencapture
             //Take pixels
             for (int x = 0; x < _xdim; x++)
             {
-                for (int y = 0; y <_ydim; y++)
+                for (int y = 0; y < _ydim; y++)
                 {
-                    int xPos =(int)((double)(bmp.Width) / (double)(_xdim) * x);
-                    int yPos =(int)((double)(bmp.Height) / (double)(_ydim) * y);
-                    Color color = bmp.GetPixel(xPos,yPos);
+                    int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
+                    int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
+                    Color color = bmp.GetPixel(xPos, yPos);
                     int colorArgb = color.ToArgb();
-                    _values[x,y] = colorArgb;
+                    _values[x, y] = colorArgb;
                 }
 
+            }
+        }
+        public void OverlaySnapshot(System.Drawing.Bitmap bmp)
+        {
+            if (IsChanged)
+            {
+                //Take pixels
+                for (int x = 0; x < _xdim; x++)
+                {
+                    for (int y = 0; y < _ydim; y++)
+                    {
+                        if (_values[x, y] != 0)
+                        {
+                            int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
+                            int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
+                            bmp.SetPixel(xPos, yPos, Color.DarkRed);
+                        }
+                    }
+                }
             }
         }
     }
@@ -121,7 +140,8 @@ namespace screencapture
 
         private SensorSnapshot _lastSnapshot = null;
         private SensorSnapshot _thisSnapshot;
-        
+        private SensorSnapshot _delta = null;
+
 
 
 
@@ -129,7 +149,17 @@ namespace screencapture
         {
         }
 
-      
+
+        public void OverlayDeltaToBitmap(Bitmap b)
+        {
+            lock (this)
+            {
+                if (_delta != null)
+                {
+                    _delta.OverlaySnapshot(b);
+                }
+            }
+        }
 
 
         public override async Task<bool> DoWork(WorkItem triggeredWorkItem)
@@ -142,9 +172,10 @@ namespace screencapture
 
             if (_lastSnapshot != null)
             {
-                SensorSnapshot delta = new SensorSnapshot(_lastSnapshot, _thisSnapshot);
-                System.Diagnostics.Debug.WriteLine(delta.IsChanged.ToString());
-
+                lock (this)
+                {
+                    _delta = new SensorSnapshot(_lastSnapshot, _thisSnapshot);
+                }
             }
 
             //Do stuff

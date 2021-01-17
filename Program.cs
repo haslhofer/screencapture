@@ -33,6 +33,7 @@ namespace screencapture
         public static List<GenericWorker> WorkerList = new List<GenericWorker>();
 
         public static ImageCacheWorker CacheWorker;
+        public static MotionDetection MotionDetectionWorker;
 
         public static IdealMonitorRect IdealMonitorRectWorker;
 
@@ -112,8 +113,8 @@ namespace screencapture
             WorkerList.Add(cacheWorker);
 
             //Motion Detection
-            MotionDetection detect = new MotionDetection();
-            WorkerList.Add(detect);
+            MotionDetectionWorker  = new MotionDetection();
+            WorkerList.Add(MotionDetectionWorker);
 
             //Perform OCR to determine embeddings
             //OcrWorker ocrWorker = new OcrWorker();

@@ -252,8 +252,12 @@ namespace screencapture
 
         public void SetImage(Bitmap img)
         {
+            
+
             if (Program.CacheWorker.GetCacheMode() == ImageCacheWorker.CacheMode.Capture)
             {
+                Program.MotionDetectionWorker.OverlayDeltaToBitmap(img);
+                
                 if (this.InvokeRequired)
                 {
                     InvokeUI(() =>
