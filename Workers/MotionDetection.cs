@@ -13,64 +13,80 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace screencapture
 {
-    class SensorSnapshot
+    class DeltaSnapshot
     {
-        private enum SnapshotKind
-        {
-            Raw,
-            Delta
-        }
-
-        private int[,] _values;
+        private long[,] _values = null;
         private int _xdim;
         private int _ydim;
-        private SnapshotKind _kind;
-        private bool _isChanged = false;
-        public SensorSnapshot(int xDim, int yDim)
+
+        private static long RELEVANT_HISTORY_TICK = new TimeSpan(0, 0, 10).Ticks;
+
+        public void OverlaySnapshot(System.Drawing.Bitmap bmp)
         {
-            _values = new int[xDim, yDim];
-            _xdim = xDim;
-            _ydim = yDim;
-            _kind = SnapshotKind.Raw;
+
+            long min_changed_date = DateTime.Now.Ticks - RELEVANT_HISTORY_TICK;
+
+            //Take pixels
+            for (int x = 0; x < _xdim; x++)
+            {
+                for (int y = 0; y < _ydim; y++)
+                {
+
+                    if (_values[x, y] > min_changed_date) //Sensor was changed recently
+                    {
+                        int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
+                        int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
+                        RenderImage.SetMarkerAtPosition(bmp, xPos, yPos);
+                        
+                    }
+                }
+            }
+
         }
-        public SensorSnapshot(SensorSnapshot oldSnap, SensorSnapshot newSnap)
+
+        public void Update(SensorSnapshot oldSnap, SensorSnapshot newSnap)
         {
-            int sensorChanged = 0;
-            _kind = SnapshotKind.Delta;
-            bool isChanged = false;
-            _xdim = oldSnap.Xdim;
-            _ydim = oldSnap.Ydim;
-            System.Diagnostics.Debug.Assert(oldSnap.Xdim == newSnap.Xdim);
-            System.Diagnostics.Debug.Assert(oldSnap.Ydim == newSnap.Ydim);
-            _values = new int[_xdim, _ydim];
+            if (_values == null)
+            {
+
+                _xdim = oldSnap.Xdim;
+                _ydim = oldSnap.Ydim;
+                System.Diagnostics.Debug.Assert(oldSnap.Xdim == newSnap.Xdim);
+                System.Diagnostics.Debug.Assert(oldSnap.Ydim == newSnap.Ydim);
+                _values = new long[_xdim, _ydim];
+            }
+
+            long marker = DateTime.Now.Ticks;
 
             for (int x = 0; x < _xdim; x++)
             {
                 for (int y = 0; y < _ydim; y++)
                 {
-                    int delta = oldSnap._values[x, y] - newSnap._values[x, y];
-                    _values[x, y] = delta;
+                    int delta = oldSnap.SnapshotValues[x, y] - newSnap.SnapshotValues[x, y];
                     if (delta != 0)
                     {
-                        isChanged = true;
-                        sensorChanged++;
+                        _values[x, y] = marker;
                     }
                 }
 
             }
-            _isChanged = isChanged;
-            double changedPercent = (double)sensorChanged / (double)(_xdim * _ydim);
-            System.Diagnostics.Debug.WriteLine("Changed % " + changedPercent.ToString());
+        }
 
-        }
-        public bool IsChanged
+    }
+    class SensorSnapshot
+    {
+
+        private int[,] _values;
+        private int _xdim;
+        private int _ydim;
+
+        public SensorSnapshot(int xDim, int yDim)
         {
-            get
-            {
-                System.Diagnostics.Debug.Assert(_kind == SnapshotKind.Delta);
-                return _isChanged;
-            }
+            _values = new int[xDim, yDim];
+            _xdim = xDim;
+            _ydim = yDim;
         }
+
 
         public int[,] SnapshotValues
         {
@@ -111,25 +127,7 @@ namespace screencapture
 
             }
         }
-        public void OverlaySnapshot(System.Drawing.Bitmap bmp)
-        {
-            if (IsChanged)
-            {
-                //Take pixels
-                for (int x = 0; x < _xdim; x++)
-                {
-                    for (int y = 0; y < _ydim; y++)
-                    {
-                        if (_values[x, y] != 0)
-                        {
-                            int xPos = (int)((double)(bmp.Width) / (double)(_xdim) * x);
-                            int yPos = (int)((double)(bmp.Height) / (double)(_ydim) * y);
-                            bmp.SetPixel(xPos, yPos, Color.DarkRed);
-                        }
-                    }
-                }
-            }
-        }
+
     }
     public class MotionDetection : GenericWorker
     {
@@ -140,25 +138,20 @@ namespace screencapture
 
         private SensorSnapshot _lastSnapshot = null;
         private SensorSnapshot _thisSnapshot;
-        private SensorSnapshot _delta = null;
+        private DeltaSnapshot _delta = null;
 
 
 
 
         public MotionDetection() : base(new List<WorkItemType>() { WorkItemType.ScreenShotTaken })
         {
+            _delta = new DeltaSnapshot();
         }
 
 
         public void OverlayDeltaToBitmap(Bitmap b)
         {
-            lock (this)
-            {
-                if (_delta != null)
-                {
-                    _delta.OverlaySnapshot(b);
-                }
-            }
+            _delta.OverlaySnapshot(b);
         }
 
 
@@ -172,10 +165,7 @@ namespace screencapture
 
             if (_lastSnapshot != null)
             {
-                lock (this)
-                {
-                    _delta = new SensorSnapshot(_lastSnapshot, _thisSnapshot);
-                }
+                _delta.Update(_lastSnapshot, _thisSnapshot);
             }
 
             //Do stuff

@@ -14,6 +14,15 @@ namespace screencapture
     public class RenderImage
     {
 
+        public static void SetMarkerAtPosition(Bitmap bmp, int x, int y)
+        {
+            using (Graphics graph = Graphics.FromImage(bmp))
+            {
+                graph.DrawRectangle(Pens.Red, x,y,10,10);
+                graph.Flush();
+            }
+
+        }
         public static Bitmap BitmapFromBmpByteArray(byte[] data)
         {
             MemoryStream m = new MemoryStream(data);
