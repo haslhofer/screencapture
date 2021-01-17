@@ -102,13 +102,7 @@ namespace screencapture
             }
         }
 
-        private Image ImageFromBmpByteArray(byte[] data)
-        {
-            MemoryStream m = new MemoryStream(data);
-            Image r = Image.FromStream(m);
-            return r;
-        }
-
+      
 
         public override async Task<bool> DoWork(WorkItem triggeredWorkItem)
         {
@@ -127,11 +121,11 @@ namespace screencapture
                         _ticksLastItemCached = ticksNow;
                         ImageCacheItem cacheItem = new ImageCacheItem();
                         cacheItem.TickTimeTaken = ticksNow;
-                        Image i = ImageFromBmpByteArray((byte[])triggeredWorkItem.WorkItemContext);
+                        Bitmap i = RenderImage.BitmapFromBmpByteArray((byte[])triggeredWorkItem.WorkItemContext);
 
                         cacheItem.ImageTaken = i;
 
-                        string text = OcrHelperWindows.GetFullTextFromImage(i).GetAwaiter().GetResult();
+                        //string text = OcrHelperWindows.GetFullTextFromImage(i).GetAwaiter().GetResult();
                         //cacheItem.TextEmbeddingOfScreen = Embeddings.GetEmbeddingFromText(text).GetAwaiter().GetResult();
 
 

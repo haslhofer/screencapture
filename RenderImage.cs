@@ -5,6 +5,7 @@ using System.Collections;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.IO;
 
 namespace screencapture
 {
@@ -12,6 +13,15 @@ namespace screencapture
 
     public class RenderImage
     {
+
+        public static Bitmap BitmapFromBmpByteArray(byte[] data)
+        {
+            MemoryStream m = new MemoryStream(data);
+
+            Bitmap r = (Bitmap)Bitmap.FromStream(m);
+            return r;
+        }
+
         public static Bitmap GetWhiteBitmap(int x, int y)
         {
             Bitmap bmp = new Bitmap(x, y);
@@ -29,7 +39,8 @@ namespace screencapture
             //First determine width each image would have if scaled to the same height
             double desiredHeight = 200;
             double totalScaledWidth = 0;
-            foreach (var i in images) { 
+            foreach (var i in images)
+            {
                 //Assume each image has fixed heigth of 200
                 double scaledWidth = (desiredHeight / (double)i.Height) * (double)i.Width;
                 totalScaledWidth += scaledWidth;
@@ -47,13 +58,13 @@ namespace screencapture
                 foreach (var i in images)
                 {
                     double newWidth = finalHeight / (double)i.Height * (double)i.Width;
-                    graph.DrawImage(i, (int)curX, 0, (int)newWidth, (int)finalHeight );
+                    graph.DrawImage(i, (int)curX, 0, (int)newWidth, (int)finalHeight);
                     curX += newWidth;
                 }
 
                 graph.Flush();
             }
-            
+
             return bmp;
 
         }
@@ -92,7 +103,7 @@ namespace screencapture
 
                 // Draw the text onto the image
                 g.DrawString(snip.Content, new Font("Tahoma", 6), Brushes.Black, rectf, format);
-                
+
 
                 g.DrawRectangle(Pens.Red, rect);
             }

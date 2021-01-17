@@ -32,7 +32,7 @@ namespace screencapture
 
 
             //Take Screenshot
-            Tuple<Image, byte[]> imgTuple = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
+            Tuple<Bitmap, byte[]> imgTuple = ScreenCapture.CaptureWindowFromDevice(aDisplay.DeviceName, Rec.Left, Rec.Top, Rec.Width,Rec.Height);
             
             Program._OaDisplayUx.SetImage(imgTuple.Item1);
 

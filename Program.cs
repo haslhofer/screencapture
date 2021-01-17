@@ -111,6 +111,10 @@ namespace screencapture
             CacheWorker = cacheWorker;
             WorkerList.Add(cacheWorker);
 
+            //Motion Detection
+            MotionDetection detect = new MotionDetection();
+            WorkerList.Add(detect);
+
             //Perform OCR to determine embeddings
             //OcrWorker ocrWorker = new OcrWorker();
             //WorkerList.Add(ocrWorker);
@@ -141,7 +145,7 @@ namespace screencapture
                 while (true)
                 {
                     IdealMonitorRectWorker.DetermineRect();
-                    Thread.Sleep(5000);
+                    Thread.Sleep(2000);
                 }
             });
 
